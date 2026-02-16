@@ -5,7 +5,7 @@
 
 .PHONY: all check tree docs docs-clean clean
 
-all: check
+all: docs check
 
 # "check" non compila niente: valida JSON e header presence
 check:
