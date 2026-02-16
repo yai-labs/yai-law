@@ -1,3 +1,7 @@
+/**
+ * @file protocol.h
+ * @brief Core protocol definitions and handshake contracts.
+ */
 #ifndef YAI_PROTOCOL_H
 #define YAI_PROTOCOL_H
 
@@ -19,6 +23,7 @@
    SESSION STATE MACHINE (L3 CONTRACT)
    ============================================================ */
 
+/** Protocol session state. */
 typedef enum {
     YAI_PROTO_STATE_IDLE       = 0,
     YAI_PROTO_STATE_HANDSHAKE  = 1,
@@ -42,14 +47,14 @@ typedef enum {
 
 #pragma pack(push, 1)
 
-/* Client → Kernel */
+/** Client → Kernel handshake request. */
 typedef struct yai_handshake_req {
     uint32_t client_version;
     uint32_t capabilities_requested;
     char     client_name[32];
 } yai_handshake_req_t;
 
-/* Kernel → Client */
+/** Kernel → Client handshake acknowledgement. */
 typedef struct yai_handshake_ack {
     uint32_t server_version;
     uint32_t capabilities_granted;

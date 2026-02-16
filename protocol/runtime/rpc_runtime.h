@@ -1,3 +1,7 @@
+/**
+ * @file rpc_runtime.h
+ * @brief Runtime RPC helpers for envelope validation and response preparation.
+ */
 #pragma once
 
 #include <stdbool.h>
@@ -8,10 +12,12 @@
 extern "C" {
 #endif
 
+/** Validate an incoming envelope against the expected workspace ID. */
 bool yai_envelope_validate(
     const yai_rpc_envelope_t* env,
     const char* expected_ws_id);
 
+/** Prepare a response envelope derived from an incoming request. */
 void yai_envelope_prepare_response(
     yai_rpc_envelope_t* out,
     const yai_rpc_envelope_t* request,

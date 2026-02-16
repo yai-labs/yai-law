@@ -1,3 +1,7 @@
+/**
+ * @file auth.h
+ * @brief Authentication token schema and claims.
+ */
 #ifndef YAI_PROTOCOL_AUTH_H
 #define YAI_PROTOCOL_AUTH_H
 
@@ -8,6 +12,7 @@
 #define YAI_TOKEN_ISSUER_MAX  32u
 #define YAI_TOKEN_NONCE_MAX   16u
 
+/** Claim identifiers for auth tokens. */
 typedef enum yai_claim_id {
     YAI_CLAIM_NONE = 0,
     YAI_CLAIM_SYSTEM = 1,
@@ -16,6 +21,7 @@ typedef enum yai_claim_id {
 } yai_claim_id_t;
 
 #pragma pack(push, 1)
+/** Packed authentication token. */
 typedef struct yai_token {
     uint32_t version;
     uint32_t ttl_secs;

@@ -1,3 +1,7 @@
+/**
+ * @file transport.h
+ * @brief RPC envelope and transport framing constants.
+ */
 #ifndef YAI_PROTOCOL_TRANSPORT_H
 #define YAI_PROTOCOL_TRANSPORT_H
 
@@ -8,6 +12,7 @@
 
 #pragma pack(push, 1)
 
+/** RPC transport envelope. */
 typedef struct yai_rpc_envelope {
     uint32_t magic;
     uint32_t version;

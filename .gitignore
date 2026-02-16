@@ -3,3 +3,6 @@ Thumbs.db
 *.swp
 *.swo
 *.tmp
+dist/
+dist/docs/doxygen/
+sys

@@ -1,6 +1,11 @@
+/**
+ * @file errors.h
+ * @brief Protocol error codes for transport and session handling.
+ */
 #ifndef YAI_PROTOCOL_ERRORS_H
 #define YAI_PROTOCOL_ERRORS_H
 
+/** Error codes returned by protocol handlers. */
 typedef enum {
     YAI_OK = 0,
     YAI_E_BAD_MAGIC        = 100, // Non è un pacchetto YAI

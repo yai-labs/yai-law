@@ -1,3 +1,7 @@
+/**
+ * @file yai_protocol_ids.h
+ * @brief Canonical protocol command classes and IDs.
+ */
 #ifndef YAI_PROTOCOL_IDS_H
 #define YAI_PROTOCOL_IDS_H
 
@@ -16,6 +20,7 @@
    COMMAND IDS
    ============================================================ */
 
+/** Command IDs (never reuse). */
 typedef enum {
 
     /* Control Plane (0x01xx) */

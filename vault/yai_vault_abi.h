@@ -1,5 +1,9 @@
 /* AUTO-GENERATED: vault/vault_abi.json */
 /* Generated: 2026-02-13T21:27:22Z */
+/**
+ * @file yai_vault_abi.h
+ * @brief Vault ABI offsets and constants (generated from schema).
+ */
 #ifndef YAI_VAULT_ABI_H
 #define YAI_VAULT_ABI_H
 

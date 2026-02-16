@@ -1,3 +1,7 @@
+/**
+ * @file audit.h
+ * @brief Audit record schema for protocol events.
+ */
 #ifndef YAI_PROTOCOL_AUDIT_H
 #define YAI_PROTOCOL_AUDIT_H
 
@@ -5,6 +9,7 @@
 #include <stddef.h>
 
 #pragma pack(push, 1)
+/** Packed audit record. */
 typedef struct yai_audit_record {
     uint32_t event_id;
     uint32_t state_from;
