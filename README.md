@@ -39,7 +39,7 @@ Consumers **pin** a revision and integrate it as a dependency.
 **Normative artifacts are binding** (contracts you must implement/validate):
 
 - JSON schemas and contracts (`*.json`)
-- Protocol and ABI headers (`protocol/*.h`, `vault/*.h`)
+- Protocol and ABI headers (`specs/protocol/include/*.h`, `specs/vault/include/*.h`)
 - Formal contracts and proofs (`contracts/**`)
 - Compliance packs (`compliance/**`)
 - Test vectors (`vectors/**`)
@@ -60,22 +60,6 @@ Treat this repo as a pinned dependency:
 - vendored snapshot with a recorded commit hash
 
 Upgrades are deliberate: read `VERSIONING.md`, check `COMPATIBILITY.md`, then validate with your conformance gates.
-
----
-
-## Repository map
-
-- `protocol/` — protocol headers, transport rules, IDs
-- `vault/` — vault ABI contract
-- `control/` — control-plane schemas
-- `cli/` — CLI command schemas and public interface definition
-- `engine/` — engine contract surface
-- `graph/` — graph schema and rules
-- `providers/` — provider-facing schema
-- `contracts/` — axioms, invariants, boundaries, formal artifacts
-- `compliance/` — policy specs + versioned packs
-- `vectors/` — conformance vectors (audit/auth/transport/etc.)
-- `scripts/` — release/versioning helpers (repo-local)
 
 ---
 

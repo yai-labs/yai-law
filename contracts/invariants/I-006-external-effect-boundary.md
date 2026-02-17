@@ -102,7 +102,7 @@ Runtime model binding:
 `external_effect => (authority # "NONE" /\ compliance_context_valid = TRUE)`
 
 This is enforced at the authority layer and model-checked in
-`contracts/formal/YAI_KERNEL.tla`.
+`formal/YAI_KERNEL.tla`.
 
 Internal transitions remain subject to all other YAI invariants, but do not require
 the strengthened conditions above.

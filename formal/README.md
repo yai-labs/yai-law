@@ -18,4 +18,4 @@ These artifacts are authoritative for the formal model.
 
 ## Binding
 
-The formal model must remain aligned with the contracts in `contracts/` and the protocol definitions in `protocol/`.
+The formal model must remain aligned with the contracts in `contracts/` and the protocol definitions in `specs/protocol/`.

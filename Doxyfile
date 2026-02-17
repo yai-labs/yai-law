@@ -12,17 +12,21 @@ RECURSIVE              = YES
 FILE_PATTERNS          = *.h *.md
 
 # Inputs
-INPUT                  = protocol \
-                         vault \
+INPUT                  = contracts \
+                         specs \
+                         formal \
+                         compliance \
+                         vectors \
+                         docs \
                          README.md \
                          SPEC_MAP.md \
                          REGISTRY.md \
                          VERSIONING.md \
-                         docs/api/C_MAINPAGE.md
+                         docs/C_MAINPAGE.md
 
 # Markdown
 MARKDOWN_SUPPORT       = YES
-USE_MDFILE_AS_MAINPAGE = docs/api/C_MAINPAGE.md
+USE_MDFILE_AS_MAINPAGE = docs/C_MAINPAGE.md
 
 # Output layout
 GENERATE_TREEVIEW      = YES

@@ -24,46 +24,46 @@ Policy packs:
 - `contracts/terminology/`
 - `contracts/extensions/`
 - `contracts/extensions/compliance/`
-- `contracts/formal/`
+- `formal/`
 
 ## Protocol
 
-- `protocol/protocol.h`
-- `protocol/transport.h`
-- `protocol/yai_protocol_ids.h`
-- `protocol/errors.h`
-- `protocol/auth.h`
-- `protocol/roles.h`
-- `protocol/session.h`
-- `protocol/audit.h`
-- `protocol/runtime/rpc_runtime.h`
+- `specs/protocol/include/protocol.h`
+- `specs/protocol/include/transport.h`
+- `specs/protocol/include/yai_protocol_ids.h`
+- `specs/protocol/include/errors.h`
+- `specs/protocol/include/auth.h`
+- `specs/protocol/include/roles.h`
+- `specs/protocol/include/session.h`
+- `specs/protocol/include/audit.h`
+- `specs/protocol/runtime/include/rpc_runtime.h`
 
 ## Control
 
-- `control/control_plane.v1.json`
-- `control/authority.json`
+- `specs/control/schema/control_plane.v1.json`
+- `specs/control/schema/authority.json`
 
 ## CLI
 
-- `cli/commands.v1.json`
-- `cli/commands.schema.json`
+- `specs/cli/schema/commands.v1.json`
+- `specs/cli/schema/commands.schema.json`
 
 ## Vault
 
-- `vault/vault_abi.json`
-- `vault/yai_vault_abi.h`
+- `specs/vault/schema/vault_abi.json`
+- `specs/vault/include/yai_vault_abi.h`
 
 ## Graph
 
-- `graph/graph.v1.json`
+- `specs/graph/schema/graph.v1.json`
 
 ## Providers
 
-- `providers/providers.v1.json`
+- `specs/providers/schema/providers.v1.json`
 
 ## Engine
 
-- `engine/engine_cortex.v1.json`
+- `specs/engine/schema/engine_cortex.v1.json`
 
 ## Vectors (Conformance)
 

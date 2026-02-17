@@ -154,4 +154,4 @@ Examples:
 
 ### Deprecated / Historical
 - `yai tui` is removed from CLI and replaced by YX GUI.
-- Historical reference remains in `cli/TUI_COCKPIT_V1.md`.
+- Historical reference remains in `specs/cli/notes/TUI_COCKPIT_V1.md`.

@@ -39,7 +39,7 @@ In this repository, the following are **normative**:
 * `axioms/*`
 * `invariants/*`
 * `boundaries/*`
-* `protocol/*`
+* `specs/protocol/include/*`
 * `formal/YAI_KERNEL.tla`, `formal/YAI_KERNEL.cfg` (when present)
 
 If a downstream repo contradicts these, the downstream repo is wrong.
@@ -114,7 +114,7 @@ Silent law changes are non-compliant.
 
 ## Enforcement / Mechanism
 
-* ABI/protocol changes MUST update this repo before downstream implementations.
+* ABI and protocol changes MUST update this repo before downstream implementations.
 * Downstream repos MUST align to the latest law; divergence is a violation, not a variant.
 * Any downstream behavior that cannot be traced to a law surface is invalid by definition.
 
@@ -127,7 +127,7 @@ Normative interfaces include:
 * `axioms/*`
 * `invariants/*`
 * `boundaries/*`
-* `protocol/*`
+* `specs/protocol/include/*`
 * `formal/YAI_KERNEL.tla`
 * `formal/YAI_KERNEL.cfg`
 
@@ -135,7 +135,7 @@ Normative interfaces include:
 
 ## Failure Modes
 
-* ABI/protocol/state machine changes without law updates
+* ABI and protocol state-machine changes without law updates
 * Conflicting “truth sources” across repos (duplicate, contradictory specs)
 * Hidden policy shifts without traceable authority updates
 * Explanatory docs treated as binding (role inversion)

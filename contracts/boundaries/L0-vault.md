@@ -89,7 +89,7 @@ The header MUST be:
 
 ### Command and State ID Registry
 
-- All command IDs and state IDs MUST be defined in `protocol/yai_protocol_ids.h`.
+- All command IDs and state IDs MUST be defined in `specs/protocol/include/yai_protocol_ids.h`.
 - IDs MUST be stable, unique, and non-reused.
 - ID ranges ARE reserved:
   - `0x01xx`: Control/Kernel
@@ -112,7 +112,7 @@ The header MUST be:
 L0 must be enforceable via non-negotiable checks:
 
 - Compile-time offset checks in vault headers (static asserts on offsets/sizes)
-- Protocol header constants defined in `protocol/yai_protocol_ids.h`
+- Protocol header constants defined in `specs/protocol/include/yai_protocol_ids.h`
 - Kernel startup validation:
   - header signature check
   - version + layout compatibility check
@@ -124,10 +124,10 @@ L0 must be enforceable via non-negotiable checks:
 
 This boundary binds the following files (non-exhaustive):
 
-- `protocol/README.md`
-- `protocol/protocol.h`, `transport.h`, `yai_protocol_ids.h`
+- `specs/protocol/README.md`
+- `specs/protocol/include/protocol.h`, `transport.h`, `yai_protocol_ids.h`
 - `../kernel/include/yai_vault.h`
-- `engine/include/shared_constants.h`
+- `TODO(link): runtime shared constants header path in yai repo`
 - `mind/src/shared/constants.rs`
 
 ---

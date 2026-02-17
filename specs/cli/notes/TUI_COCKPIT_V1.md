@@ -17,7 +17,7 @@ Legacy alias:
 
 ## Runtime Contract (Historical)
 
-- TUI was a client of control plane and graph/db/log interfaces.
+- TUI was a client of control plane and graph, db, log interfaces.
 - TUI did not bypass RPC contracts for lifecycle control.
 - TUI did not write runtime state directly.
 - Snapshot mode was deterministic for the selected view at call time.

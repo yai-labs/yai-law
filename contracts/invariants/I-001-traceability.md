@@ -20,7 +20,7 @@ This invariant constrains any component or layer that can produce, authorize, tr
 
 - actions (external effects, I/O, writes, emissions)
 - decisions (routing, planning, selection, scoring, resolution)
-- state transitions (kernel/engine/mind state, session state, memory state)
+- state transitions (kernel, engine, mind state, session state, memory state)
 - authority enforcement (permit/deny, gating outcomes, policy evaluation)
 
 To satisfy traceability, YAI must preserve minimum semantic evidence for every valid action or transition:

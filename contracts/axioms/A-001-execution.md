@@ -35,7 +35,7 @@ A transition that exists only in local memory, speculation, or transient computa
 is not execution in the YAI sense.
 
 If a transition cannot be observed and attributed through the system’s authoritative substrate
-(e.g. vault/state machine/trace), it is not a valid execution event.
+(e.g. vault, state machine, trace), it is not a valid execution event.
 
 ## Execution Is Not Computation
 

@@ -17,7 +17,7 @@ and
 
 ## Runtime Model Binding
 
-The formal kernel model (`contracts/formal/YAI_KERNEL.tla`) binds this invariant through:
+The formal kernel model (`formal/YAI_KERNEL.tla`) binds this invariant through:
 
 - variable `compliance_context_valid`
 - guard `ExternalEffectGuard`
