@@ -46,3 +46,7 @@ If there is a conflict, normative artifacts take precedence.
 - Treat this repo as a pinned dependency (submodule or snapshot).
 - Upgrades are deliberate and validated against `VERSIONING.md` and `COMPATIBILITY.md`.
 - Do not copy specs into downstream repos; link and pin instead.
+
+## License
+
+This repository is licensed under Apache-2.0. See `LICENSE`.
