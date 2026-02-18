@@ -1,6 +1,6 @@
 # Tools Policy
 
-1. No `scripts/` directory exists.
+1. No legacy `scripts` directory exists.
 2. All executable entrypoints live in `tools/bin/*`.
 3. Operational suites, gates, and verify scripts live under `tools/ops/*`.
 4. Dev helpers live under `tools/dev/*`.
