@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ISSUE_ID="N/A"
+ISSUE_REASON=""
+MP_ID="N/A"
+RUNBOOK="N/A"
+CLASSIFICATION="DOCS"
+COMPATIBILITY="A"
+OBJECTIVE=""
+CHANGES=""
+OUT_FILE=".pr/PR_BODY.md"
+
+usage() {
+  cat <<USAGE
+Usage: tools/bin/yai-dev-pr-body [options]
+
+Options:
+  --issue <#123|123|N/A>
+  --reason <text>                 Required when --issue N/A
+  --mp <MP-ID|N/A>
+  --runbook <path|N/A>
+  --classification <FEATURE|FIX|DOCS|OPS|META>
+  --compatibility <A|B|C>
+  --objective <text>
+  --changes <text>                Short bullet-style summary
+  --out <file>                    Default: .pr/PR_BODY.md
+  -h, --help
+USAGE
+}
+
+normalize_issue() {
+  local raw="$1"
+  local upper
+  upper="$(printf '%s' "$raw" | tr '[:lower:]' '[:upper:]')"
+  if [[ "$upper" == "N/A" || "$upper" == "NA" ]]; then
+    echo "N/A"
+    return 0
+  fi
+  raw="${raw#\#}"
+  if [[ "$raw" =~ ^[0-9]+$ ]]; then
+    echo "#$raw"
+    return 0
+  fi
+  echo "ERR: --issue must be <number>, #<number>, or N/A" >&2
+  exit 2
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --issue) ISSUE_ID="$(normalize_issue "${2:-}")"; shift 2 ;;
+    --reason) ISSUE_REASON="${2:-}"; shift 2 ;;
+    --mp) MP_ID="${2:-}"; shift 2 ;;
+    --runbook) RUNBOOK="${2:-}"; shift 2 ;;
+    --classification) CLASSIFICATION="${2:-}"; shift 2 ;;
+    --compatibility) COMPATIBILITY="${2:-}"; shift 2 ;;
+    --objective) OBJECTIVE="${2:-}"; shift 2 ;;
+    --changes) CHANGES="${2:-}"; shift 2 ;;
+    --out) OUT_FILE="${2:-}"; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "ERR: unknown arg: $1" >&2; usage; exit 2 ;;
+  esac
+done
+
+if [[ "$ISSUE_ID" == "N/A" && -z "${ISSUE_REASON// }" ]]; then
+  echo "ERR: --reason is required when --issue is N/A" >&2
+  exit 2
+fi
+
+BASE_SHA="$(git rev-parse HEAD)"
+TEMPLATE_PATH=".github/PULL_REQUEST_TEMPLATE.md"
+mkdir -p "$(dirname "$OUT_FILE")"
+
+{
+  cat <<BODY
+## IDs
+- Issue-ID: ${ISSUE_ID}
+- Issue-Reason: ${ISSUE_REASON:-N/A}
+- MP-ID: ${MP_ID}
+- Runbook: ${RUNBOOK}
+- Base-Commit: ${BASE_SHA}
+
+## Classification
+- Classification: ${CLASSIFICATION}
+- Compatibility: ${COMPATIBILITY}
+
+## Objective
+${OBJECTIVE:-<describe objective>}
+
+## What changed
+${CHANGES:-- <summarize key changes>}
+
+## Evidence
+- Positive:
+  - <case 1>
+- Negative:
+  - <case 1>
+
+## Commands run
+\`\`\`bash
+# exact commands
+\`\`\`
+
+BODY
+
+  if [[ -f "$TEMPLATE_PATH" ]]; then
+    echo "## Repository checklist"
+    echo
+    cat "$TEMPLATE_PATH"
+  fi
+} > "$OUT_FILE"
+
+echo "OK: wrote $OUT_FILE"
