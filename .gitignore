@@ -8,3 +8,4 @@ dist/docs/
 sys
 
 .vscode/
+.pr/
