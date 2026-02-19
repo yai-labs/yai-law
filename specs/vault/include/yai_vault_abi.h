@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /* AUTO-GENERATED: vault/vault_abi.json */
-/* Generated: 2026-02-13T21:27:22Z */
+/* Generated: 2026-02-19T09:42:25Z */
 /**
  * @file yai_vault_abi.h
  * @brief Vault ABI offsets and constants (generated from schema).
