@@ -603,6 +603,126 @@
       ]
     },
     {
+      "name": "root",
+      "group": "control",
+      "summary": "Root control-plane probes and handshake-level checks",
+      "args": [
+        {
+          "name": "subcommand",
+          "pos": 1,
+          "type": "enum",
+          "values": [
+            "ping"
+          ],
+          "required": true
+        },
+        {
+          "name": "ws",
+          "flag": "--ws",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "arming",
+          "flag": "--arming",
+          "type": "bool",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "role",
+          "flag": "--role",
+          "type": "enum",
+          "values": [
+            "operator",
+            "system"
+          ],
+          "required": false
+        }
+      ],
+      "outputs": [
+        "text",
+        "json"
+      ],
+      "side_effects": [
+        "rpc_call"
+      ],
+      "law_hooks": [
+        "I-001",
+        "I-002",
+        "I-003",
+        "L1"
+      ]
+    },
+    {
+      "name": "kernel",
+      "group": "control",
+      "summary": "Kernel authority operations and workspace lifecycle",
+      "args": [
+        {
+          "name": "subcommand",
+          "pos": 1,
+          "type": "enum",
+          "values": [
+            "ping",
+            "ws"
+          ],
+          "required": true
+        },
+        {
+          "name": "ws_action",
+          "pos": 2,
+          "type": "enum",
+          "values": [
+            "create",
+            "destroy",
+            "reset"
+          ],
+          "required": false
+        },
+        {
+          "name": "ws",
+          "flag": "--ws",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "arming",
+          "flag": "--arming",
+          "type": "bool",
+          "required": false,
+          "default": false
+        },
+        {
+          "name": "role",
+          "flag": "--role",
+          "type": "enum",
+          "values": [
+            "operator",
+            "system"
+          ],
+          "required": false
+        }
+      ],
+      "outputs": [
+        "text",
+        "json"
+      ],
+      "side_effects": [
+        "rpc_call",
+        "write_session",
+        "remove_session"
+      ],
+      "law_hooks": [
+        "I-001",
+        "I-002",
+        "I-003",
+        "I-006",
+        "L1",
+        "L2"
+      ]
+    },
+    {
       "name": "graph",
       "group": "memory",
       "summary": "MindGraph operations (semantic add-node/add-edge, query uses semantic+vector+activation)",

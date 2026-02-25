@@ -64,6 +64,8 @@ It is normative. Implementations must conform.
 - `yai dsar`
 - `yai chat`
 - `yai shell`
+- `yai root`
+- `yai kernel`
 
 ### Memory / Graph
 - `yai graph`
@@ -136,6 +138,21 @@ Purpose: execute capability-gated shell commands via control plane.
 
 Usage:
 - `yai shell --ws <id> exec [--cwd <path>] <cmd> [args...]`
+
+### `yai root`
+Purpose: root-level control-plane liveness and authority envelope checks.
+
+Usage:
+- `yai root ping --ws <id> [--arming] [--role <operator|system>]`
+
+### `yai kernel`
+Purpose: kernel authority operations and workspace lifecycle controls.
+
+Usage:
+- `yai kernel ping --ws <id> [--arming] [--role <operator|system>]`
+- `yai kernel ws create --ws <id> [--arming] [--role <operator|system>]`
+- `yai kernel ws destroy --ws <id> [--arming] [--role <operator|system>]`
+- `yai kernel ws reset --ws <id> [--arming] [--role <operator|system>]`
 
 ### `yai graph`
 Purpose: graph memory operations (semantic/vector/activation/awareness).
