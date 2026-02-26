@@ -61,15 +61,13 @@ lint-docs:
 # Formal gates
 # --------------------------------
 formal-bindings-check:
-	@echo "[formal] checking required bindings..."
-	@test -f law/bindings/BINDING_PROTOCOL.md
-	@test -f law/bindings/BINDING_VAULT.md
-	@test -f law/bindings/BINDING_GRAPH.md
-	@test -f law/bindings/BINDING_CONTROL.md
-	@test -f law/bindings/BINDING_CLI.md
-	@test -f law/bindings/BINDING_COMPLIANCE.md
-	@test -f law/bindings/KERNEL_LAW_BINDING.md
-	@echo "[formal] bindings: OK"
+	@test -f law/bindings/protocol/README.md
+	@test -f law/bindings/vault/README.md
+	@test -f law/bindings/graph/README.md
+	@test -f law/bindings/control/README.md
+	@test -f law/bindings/cli/README.md
+	@test -f law/bindings/compliance/README.md
+	@test -f law/bindings/kernel/README.md
 
 formal-coverage:
 	@echo "[formal] validating traceability coverage..."
