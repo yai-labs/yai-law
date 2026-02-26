@@ -10,7 +10,7 @@ SHELL := /bin/bash
 
 all: check
 
-ci: lint-layout check formal-bindings-check formal-coverage lint-docs
+ci: lint-layout check formal-bindings-check formal-coverage validate-law-registry lint-docs
 
 # --------------------------------
 # Hard-mode layout gate
@@ -69,6 +69,11 @@ formal-coverage:
 	@echo "[formal] validating traceability coverage..."
 	@python3 tools/formal/validate_traceability.py
 	@echo "[formal] coverage: OK"
+
+validate-law-registry:
+	@echo "[registry] validating ABI registries (primitives <-> commands)..."
+	@python3 tools/validate/validate_registry.py
+	@echo "[registry] OK"
 
 # --------------------------------
 # Docs (Doxygen)
