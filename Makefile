@@ -35,22 +35,16 @@ check: lint-layout lint-json
 lint-json:
 	@echo "[json] validating all *.json parse..."
 	@command -v python3 >/dev/null 2>&1 || { echo "[json] python3 not found"; exit 1; }
-	@python3 - <<'PY'
-import json, glob, sys
-bad = []
-for p in glob.glob("**/*.json", recursive=True):
-    try:
-        with open(p, "r", encoding="utf-8") as f:
-            json.load(f)
-    except Exception as e:
-        bad.append((p, str(e)))
-if bad:
-    print("JSON errors:")
-    for p, e in bad:
-        print(" -", p, ":", e)
-    sys.exit(1)
-print("[json] OK")
-PY
+	@python3 -c 'import json,glob,sys; bad=[]; \
+	[bad.append((p,str(e))) for p in glob.glob("**/*.json", recursive=True) \
+	 for e in [None] \
+	 for _ in [0] \
+	 if (lambda path: ( \
+	     (lambda: (json.load(open(path,"r",encoding="utf-8")), None)[1])() \
+	 ))(p) is not None]; \
+	0 if not bad else (print("JSON errors:") or [print(" -",p,":",e) for p,e in bad] or sys.exit(1)); \
+	print("[json] OK")'
+# Nota: se vuoi più leggibile, sotto ti do una variante "python file" separata.
 
 lint-docs:
 	@echo "[docs] checking links..."
@@ -61,6 +55,7 @@ lint-docs:
 # Formal gates
 # --------------------------------
 formal-bindings-check:
+	@echo "[formal] checking required bindings..."
 	@test -f law/bindings/protocol/README.md
 	@test -f law/bindings/vault/README.md
 	@test -f law/bindings/graph/README.md
@@ -68,6 +63,7 @@ formal-bindings-check:
 	@test -f law/bindings/cli/README.md
 	@test -f law/bindings/compliance/README.md
 	@test -f law/bindings/kernel/README.md
+	@echo "[formal] bindings: OK"
 
 formal-coverage:
 	@echo "[formal] validating traceability coverage..."

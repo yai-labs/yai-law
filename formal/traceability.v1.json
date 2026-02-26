@@ -29,8 +29,8 @@
         }
       ],
       "bindings": [
-        "law/bindings/BINDING_PROTOCOL.md",
-        "law/bindings/BINDING_CLI.md"
+        "law/bindings/protocol/README.md",
+        "law/bindings/cli/README.md"
       ],
       "coverage": {
         "docs": true,
@@ -64,9 +64,9 @@
         }
       ],
       "bindings": [
-        "law/bindings/BINDING_PROTOCOL.md",
-        "law/bindings/BINDING_VAULT.md",
-        "law/bindings/BINDING_GRAPH.md"
+        "law/bindings/protocol/README.md",
+        "law/bindings/vault/README.md",
+        "law/bindings/graph/README.md"
       ],
       "coverage": {
         "docs": true,
@@ -99,8 +99,8 @@
         }
       ],
       "bindings": [
-        "law/bindings/BINDING_CONTROL.md",
-        "law/bindings/BINDING_PROTOCOL.md"
+        "law/bindings/control/README.md",
+        "law/bindings/protocol/README.md"
       ],
       "coverage": {
         "docs": true,
@@ -131,7 +131,7 @@
         }
       ],
       "bindings": [
-        "law/bindings/BINDING_CONTROL.md"
+        "law/bindings/control/README.md"
       ],
       "coverage": {
         "docs": true,
@@ -163,8 +163,8 @@
         }
       ],
       "bindings": [
-        "law/bindings/BINDING_GRAPH.md",
-        "law/bindings/BINDING_PROTOCOL.md"
+        "law/bindings/graph/README.md",
+        "law/bindings/protocol/README.md"
       ],
       "coverage": {
         "docs": true,
@@ -197,8 +197,8 @@
         }
       ],
       "bindings": [
-        "law/bindings/BINDING_CONTROL.md",
-        "law/bindings/BINDING_COMPLIANCE.md"
+        "law/bindings/control/README.md",
+        "law/bindings/compliance/README.md"
       ],
       "coverage": {
         "docs": true,
@@ -230,8 +230,8 @@
         }
       ],
       "bindings": [
-        "law/bindings/BINDING_COMPLIANCE.md",
-        "law/bindings/BINDING_CONTROL.md"
+        "law/bindings/compliance/README.md",
+        "law/bindings/control/README.md"
       ],
       "coverage": {
         "docs": true,
