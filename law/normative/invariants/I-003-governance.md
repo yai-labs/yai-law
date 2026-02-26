@@ -1,116 +1,150 @@
-# I-003 — Governance as a Structural Invariant
+# I-003 — Governance (Structural Invariant, Normative)
 
-## Invariant Statement
-
-In YAI, governance is a structural invariant: the system must remain permanently constrained such that:
-
+## Summary
+Governance is a structural invariant: YAI MUST remain permanently constrained such that:
 - authority is exercised only within explicit bounds
 - execution remains accountable over time
 - violations are detectable and consequential
-
-Governance is not a process layered onto complexity.
-It is the condition that prevents authority, execution, and cognition from drifting into arbitrariness.
+- governance is non-bypassable
 
 A system that cannot maintain governance structurally is not a valid instance of YAI.
 
 ## Definitions
+**Governance**: the structural property that ensures authority, execution, and responsibility remain enforceable continuously and non-bypassably over time.
 
-### Governance
-
-The structural property that ensures authority, execution, and responsibility remain enforceable continuously and non-bypassably over time.
-
-Governance implies that the system has:
-
-- an explicit authority model (who or what can authorize)
+Governance implies:
+- an explicit authority model (who/what can authorize)
 - an enforcement boundary (where authorization is checked)
 - a consequence model (what happens on violation)
 
-Governance is not policy. Governance is the existence of enforceable constraints.
+Governance is not “policy content”; it is the existence of enforceable constraints.
 
-## Governance in YAI Is Not
+## Scope
+Applies to any path that can:
+- evaluate or assert authority
+- produce a decision
+- perform a state transition
+- produce an external effect
+- package or publish evidence for verification
 
-Governance in YAI does not mean:
+Governance MUST hold across normal operation, restarts, upgrades, recovery, and degraded modes.
 
-- human approval workflows
-- compliance checklists
-- post-hoc audits
-- trust-based supervision
-- configurable rules as the source of truth
+## Normative requirements (MUST/SHOULD)
 
-YAI may integrate such mechanisms downstream.
-They do not define governance.
+1) **Authority-bound execution**
+- No governed transition and no external effect MAY occur without explicit authority evaluation and a recorded decision.
 
-## Required Structural Constraints
+2) **Non-bypassability**
+- There MUST exist no execution path (intentional or accidental) by which a component can produce external effects outside governance constraints.
+- Governance enforcement MUST be on the execution boundary, not downstream of it.
 
-A YAI-compliant system must satisfy all of the following:
+3) **Continuity over time**
+- Governance MUST remain enforceable across:
+  - long-running execution
+  - restart/recovery
+  - upgrades/reconfiguration
+  - partial failures and degraded modes
 
-### Authority-bound execution
+4) **Detectability**
+- Attempts to bypass governance or to produce unauthorized effects MUST be detectable in a structurally meaningful way (i.e., evidence artifacts allow a verifier to prove violation).
 
-No state transition or external effect may occur without explicit, traceable authority.
-(See A-002 and I-001.)
+5) **Consequentiality**
+- Violations MUST have defined consequences that preserve system integrity (e.g., deny, suspend, contain, escalate).
+- A system that can observe violations but cannot respond is not governed.
 
-### Non-bypassability
+6) **Implementation independence**
+- Tooling, UI, and workflows MUST NOT be treated as the source of truth for governance.
+- Governance guarantees MUST be enforceable by the system regardless of operator trust.
 
-There must exist no execution path — intentional or accidental — by which a component can produce effects outside governance constraints.
-A governance model that can be bypassed is not governance.
+## ABI anchors
 
-### Continuity over time
+### Primitives used (conceptual ABI)
+- `T-003 Authority`
+- `T-004 Contract`
+- `T-005 Baseline`
+- `T-006 Policy`
+- `T-007 Decision`
+- `T-008 Outcome`
+- `T-009 ReasonCode`
+- `T-010 Effect`
+- `T-011 Evidence`
+- `T-014 Bundle`
+- `T-015 Verification`
+- `T-019 Invariant` (checking)
+- `T-022 Finding`
+- `S-004 Hash`
+- `S-008 Validate`
+- `S-011 Timeline`
+- `S-013 Index`
+- `S-014 Manifest`
+- `S-029 Sandbox` (boundary enforcement)
+- `S-030 Capability` (can-do vs should-do separation)
 
-Governance must hold across:
+### Required artifact roles (v1)
+To prove governance offline, bundles MUST provide:
 
-- long-running execution
-- reconfiguration and upgrades
-- restarts and recovery
-- partial failures and degraded modes
+- `decision_record` (authority evaluation + outcome + reason_code)
+- `policy` (material + hash)
+- `bundle_manifest` (sealed inventory and hashes)
+- `evidence_index` (artifact inventory for verification)
+- `verification_report` (PASS/FAIL + findings)
 
-Governance is not present at boot; it must remain enforceable.
+Recommended when available:
+- `containment_metrics` (useful for consequence modeling and trend detection)
 
-### Detectability of violations
+### Commands involved (if any)
+System-wide invariant. Enforcement MUST be exercised at minimum by:
+- `yai.verify.verify`
 
-If governance is violated (attempted or achieved), the system must be able to detect that the invariant has been broken in a way that is structurally meaningful (not best effort).
+Commands that drive control-plane/execution boundaries SHOULD preserve governance evidence, including:
+- `yai.control.kernel`
+- `yai.control.root`
+- `yai.lifecycle.up`
+- `yai.lifecycle.down`
+- `yai.lifecycle.restart`
 
-### Consequentiality of violations
+(Exact command set may evolve; command IDs are canonical in `law/abi/registry/commands.v1.json`.)
 
-Violations must have defined consequences that preserve system integrity (e.g., denial, suspension, escalation, containment).
-A system that can observe violations but cannot respond is not governed.
+## Verification procedure (offline)
+A verifier MUST be able to validate governance properties offline:
 
-### Implementation independence
+1) **Integrity**
+- `bundle_manifest` hashes match real files.
+- `evidence_index` covers required roles.
 
-The invariant constrains all valid implementations.
-Tooling, UI, and workflow are not substitutes for governance.
+2) **Decision precedes effect**
+- Using `decision_record` (and optional effect fields), verify:
+  - external effects are preceded by decisions
+  - denies imply effects are not applied (where measurable)
+  - decisions include authority reference and policy hash/pointer
 
-## Relationship to Other Invariants
+3) **Policy binding**
+- `policy.policy_hash` exists and matches what decisions cite.
+- baseline/contract references are present where applicable.
 
-### Governance and Traceability (I-001)
+4) **Non-bypassability evidence**
+- The evidence set MUST not permit “effects without decisions”.
+- Violations (attempts or successes) MUST surface as FAIL findings in `verification_report`.
 
-Governance requires traceability to validate authority and assign responsibility. Without traceability, governance cannot be proven.
+5) **Consequences**
+- Verify that unauthorized attempts produce deterministic outcomes (deny/error) and corresponding reason codes.
 
-### Governance and Determinism/Reproducibility (I-002)
-
-Governance requires deterministic reconstruction to enforce responsibility over time and to defend authority decisions.
-
-## Violation Signal
-
-This invariant is violated if any of the following occur:
-
-- execution occurs without explicit authority
-- a component can bypass enforcement boundaries
+## Violation signal (non-exhaustive)
+Governance is violated if:
+- execution or external effects occur without explicit authority evaluation/decision
+- an execution path can bypass enforcement boundaries
 - violations cannot be detected or cannot be made consequential
-- governance holds only in normal operation but collapses under restart, failure, or upgrade
-- governance depends on trust, convention, or external supervision as the primary control
+- governance holds only in normal operation but collapses under restart, failure, upgrade, or degraded mode
+- governance depends primarily on trust, convention, or external supervision
 
 Violations are structural: the system may continue running, but it is no longer YAI-compliant.
 
-## Scope Notes
-
-This document defines what must be true, not how it is implemented.
-
-It does not prescribe:
-
-- policy languages or rule engines
-- ACL tooling or dashboards
-- human workflows
+## Non-goals
+This invariant does not prescribe:
+- policy languages / rule engines
+- ACL tooling / dashboards
+- human approval workflows
 - access control products
-- runtime mechanisms
+- a specific runtime mechanism
 
-Downstream projects may implement these, but they must not weaken the invariant.
+Downstream implementations MAY add mechanisms, but MUST NOT weaken the invariant.

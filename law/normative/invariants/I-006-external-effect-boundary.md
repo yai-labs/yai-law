@@ -1,216 +1,165 @@
+# I-006 — External Effect Boundary (Structural Invariant, Normative)
 
-# I-006 — External Effect Boundary as a Structural Invariant
+## Summary
+The external effect boundary is a structural invariant: YAI MUST distinguish between:
+- **internal transitions** whose effects remain confined to YAI-controlled state and are isolatable/reversible in the execution model, and
+- **external-effect transitions** that produce effects outside YAI-controlled state that are irreversible or not reliably reversible.
 
-## Purpose
+External effects are highest-consequence transitions and MUST be subject to stronger authority and evidence constraints.
 
-This document defines the **external effect boundary** as a **structural invariant**
-in YAI.
+Without an explicit external effect boundary, YAI cannot remain governable where it matters most.
 
-YAI must distinguish between transitions whose effects are confined to YAI-controlled
-state and transitions that produce **external or irreversible effects**.
+## Definitions
+**Internal transition**: a valid transition whose effects remain confined to YAI-controlled state (isolatable/reversible within the model).
 
-The purpose of this boundary is to ensure that the points of highest risk and
-highest consequence are subject to **stronger authority and evidence constraints**
-and remain defensible under governance.
+**External-effect transition**: a valid transition that produces effects outside YAI-controlled state that are irreversible or not reliably reversible.
 
-Without an explicit external effect boundary, YAI cannot remain governable
-where it matters most.
+**External effect boundary predicate**: a classification function evaluated at decision time:
+`ExternalEffect(t) ∈ {true, false}` for a candidate transition `t`.
 
----
+## Scope
+Applies to any execution surface capable of:
+- network egress
+- filesystem writes outside controlled stores
+- provider calls / remote APIs
+- actuators / side-channel outputs
+- any other non-YAI-controlled effect surface
 
-## Definition
+The boundary MUST be enforced wherever the effect is attempted (non-bypassable).
 
-In YAI:
+## Normative requirements (MUST/SHOULD)
 
-- An **internal transition** is a valid state transition whose effects remain confined
-  to YAI-controlled state and are, in principle, isolatable or reversible within the
-  execution model.
-- An **external-effect transition** is a valid state transition that produces effects
-  outside YAI-controlled state that are irreversible or not reliably reversible.
+1) **Pre-execution classification**
+- The external effect classification MUST be determinable **before** executing the effect.
+- If a candidate transition cannot be classified at decision time, it MUST NOT be treated as valid.
 
-The **external effect boundary** is the canonical predicate that separates these
-two classes of transitions.
+2) **Declared effect surfaces**
+- Classification MUST be derived from declared effect surfaces (providers, OS calls, network, filesystem, remote APIs).
+- Classification is semantic-by-consequence, not “a list of APIs”.
 
-YAI must be able to determine, at the conceptual level, whether a transition
-crosses this boundary.
+3) **Strengthened authority on external effects**
+- If `ExternalEffect(t)=true`, the system MUST apply strengthened authority appropriate to scope and impact.
 
----
+4) **Augmented semantic evidence**
+For any external-effect transition, the evidence set MUST include at minimum:
+- target identity / target_ref
+- effect class / effect_type
+- irreversibility justification (or “not reliably reversible” basis)
+- authority reference
+- declared intent/purpose reference
+- risk attribution (I-005)
+- mitigation/rollback note (may be “none”)
 
-## Canonical Boundary Predicate
+5) **Non-bypassability**
+- No component MAY execute external effects outside the boundary predicate and governance constraints.
+- Side-channels (plugins, shell access, filesystem writes, provider calls) MUST NOT bypass enforcement.
 
-In YAI, the boundary is defined by a canonical predicate:
-
-**ExternalEffect(t)** -> {true, false}
-
-Where `t` is a candidate transition.
-
-Requirements:
-
-- The classification must be **determinable before execution** of the effect.
-- The predicate must be derived from **declared effect surfaces** (e.g. providers,
-  OS calls, network, filesystem, actuators, remote APIs).
-- The predicate is **semantic by consequence**, not an API list.
-
-If a transition cannot be classified at decision time, it cannot be treated as valid.
-
----
-
-## Invariant Status
-
-The external effect boundary is a **structural invariant** in YAI.
-
-As such:
-
-- It is **not optional**
-- The requirement is **non-bypassable**
-- The boundary predicate MUST be **explicitly declared and auditable** for each
-  execution surface that can produce effects
-- It applies uniformly across all YAI components
-
-Any YAI system that cannot distinguish external-effect transitions, or that treats
-external effects as internal, is **not a valid instance of YAI**.
-
----
-
-## Boundary Consequences
-
-If a transition crosses the external effect boundary, YAI requires:
-
-- **Strengthened authority** (appropriate to scope and impact)
-- **Augmented semantic evidence** with a minimum set of fields:
-  - target identity
-  - effect class
-  - irreversibility justification
-  - authority reference
-  - declared intent / purpose
-  - risk attribution (I-005)
-  - mitigation or rollback note (may be “none”)
-- **Abstract cost accountability** including risk attribution (I-005)
-- **Non-bypassability**: no component may execute external effects outside the boundary
-
-### Compliance Extension (R6)
-
-For every external-effect transition, YAI also requires a valid
-`compliance_context`.
-
-Canonical obligation:
-
+6) **Compliance extension (context required)**
+For every external-effect transition:
 `ExternalEffect => HasAuthority AND HasComplianceContext`
 
-Runtime model binding:
+- A valid compliance context MUST be present and auditable at decision time.
+- The binding MUST be enforceable at the authority layer and verifiable offline.
 
-`external_effect => (authority # "NONE" /\ compliance_context_valid = TRUE)`
+(Implementation note: compliance schemas are under `law/packs/schema/` and domain packs under `law/packs/compliance/`.)
 
-This is enforced at the authority layer and model-checked in
-`formal/YAI_KERNEL.tla`.
+## ABI anchors
 
-Internal transitions remain subject to all other YAI invariants, but do not require
-the strengthened conditions above.
+### Primitives used (conceptual ABI)
+- `T-001 Event`
+- `T-002 Identity`
+- `T-003 Authority`
+- `T-006 Policy`
+- `T-007 Decision`
+- `T-008 Outcome`
+- `T-009 ReasonCode`
+- `T-010 Effect`
+- `T-011 Evidence`
+- `T-012 Run`
+- `T-014 Bundle`
+- `T-015 Verification`
+- `S-029 Sandbox` (boundary enforcement)
+- `S-030 Capability` (prevent side-channel bypass)
+- `S-004 Hash`
+- `S-008 Validate`
+- `S-011 Timeline`
+- `S-013 Index`
 
----
+### Required artifact roles (v1)
+To prove boundary enforcement offline, bundles MUST provide:
 
-## Relationship to YAI Axioms
+- `decision_record` (must include effect classification and authority outcome)
+- `policy` (authorization basis for external effects)
+- `evidence_index` (inventory + hashes)
+- `bundle_manifest` (sealed inventory)
+- `verification_report` (PASS/FAIL findings)
 
-This invariant derives from YAI axioms:
+Recommended:
+- `containment_metrics` (risk/cost dimensions, I-005)
 
-- Execution causes consequences.
-- Authority defines what may happen.
-- State must remain inspectable as the result of authorized execution.
+### Commands involved (if any)
+System-wide invariant. Enforcement MUST be exercised at minimum by:
+- `yai.verify.verify`
 
-External effects are the highest-consequence form of execution and must be
-explicitly constrained.
+Commands that are likely to drive or expose effect surfaces SHOULD preserve boundary evidence when applicable (examples from current CLI surface):
+- `yai.control.shell` (high-risk surface; MUST NOT bypass boundary)
+- `yai.control.kernel`
+- `yai.lifecycle.up` / `yai.lifecycle.restart` / `yai.lifecycle.down`
 
----
+(See canonical command IDs in `law/abi/registry/commands.v1.json`.)
 
-## Relationship to Other Invariants
+## Verification procedure (offline)
+A verifier MUST be able to validate boundary compliance without network access:
 
-### Boundary and Traceability (I-001)
+1) **Integrity**
+- `bundle_manifest` hashes match actual files.
+- `evidence_index` covers required roles.
 
-Crossing the boundary requires augmented semantic evidence and attribution.
-Without traceability, external effects cannot be governed or audited.
+2) **Decision precedes external effect**
+- For any recorded external effect attempt/applied, there MUST exist a preceding decision record.
 
----
+3) **Classification evidence**
+- `decision_record` MUST indicate whether the candidate transition was classified as external-effect (directly or by effect_type mapping) and MUST include:
+  - authority reference
+  - policy hash/pointer
+  - outcome + reason_code
+  - target_ref/effect_type for external effects
 
-### Boundary and Governance (I-003)
+4) **Augmented evidence completeness**
+- For external effects, ensure required semantic fields are present (target/effect class/irreversibility basis/intent/risk/mitigation note).
 
-Governance must apply differentiated constraints based on boundary classification.
-If governance cannot treat external effects differently, governance collapses.
+5) **Compliance context**
+- For external effects, verify presence of a compliance context reference/serialization that validates against `law/packs/schema/compliance.context.v1.json` (and applicable pack constraints where relevant).
 
----
+6) **Report**
+- `verification_report` MUST produce FAIL findings for:
+  - post-hoc classification
+  - effects without decisions
+  - missing augmented evidence fields
+  - missing compliance context on external effects
+  - bypass indications (side-channel evidence inconsistent with decisions)
 
-### Boundary and Abstract Cost Accountability (I-005)
-
-External-effect transitions must be cost-accountable, including risk as an abstract
-cost attribute. External effects without cost accountability are non-defensible.
-
----
-
-## External Effect Boundary vs Other Concepts
-
-### Boundary vs API Classification
-
-This boundary is not a list of APIs or tools.
-It is a semantic classification by consequence.
-
----
-
-### Boundary vs Security Policies
-
-Security policies define specific rules.
-This invariant defines the conceptual requirement that external effects are treated
-as requiring stronger constraints. Policies belong downstream.
-
----
-
-## Scope Clarifications
-
-This invariant defines **what must be true**, not **how it is implemented**.
-
-This document does **not** define:
-
-- mechanisms to detect external effects
-- provider-specific effect classification
-- policy engines, confirmation workflows, or UI patterns
-- runtime enforcement architecture
-
-Those concerns belong to downstream projects and must comply
-with the invariant defined here.
-
----
-
-## Invalid Patterns
-
-The following patterns are **invalid** in YAI:
-
+## Invalid patterns (non-exhaustive)
 - external effects treated as internal transitions
-- classification made post-hoc (after execution)
-- effect surfaces not declared or not auditable
-- external-effect transitions without risk attribution (I-005)
-- external-effect transitions without a valid compliance context
-- bypass via side-channels (plugins, shell access, filesystem writes, or provider calls outside the boundary predicate)
+- classification performed post-hoc (after effect execution)
+- effect surfaces not declared/auditable
+- external effects without risk attribution (I-005)
+- external effects without compliance context
+- bypass via side-channels (plugins/shell/fs writes/provider calls outside boundary predicate)
 
----
-
-## Consequences of Violation
-
-If the external effect boundary is violated:
-
+## Violation signal
+If violated:
 - high-impact actions may occur under weak constraints
 - authority may be exercised out of scope
 - evidence becomes insufficient for audit
 - governance cannot defend responsibility
 
-Such a system cannot be considered compliant with YAI,
-regardless of correctness, performance, or intelligence.
+Violations are structural: the system is non-compliant regardless of performance or correctness.
 
----
+## Non-goals
+This invariant does not prescribe:
+- provider-specific classification mechanisms
+- enforcement architecture or UI patterns
+- policy engines or confirmation workflows
 
-## Canonical Status
-
-This document is **canonical**.
-
-All YAI runtimes, engines, governance layers, and interfaces must preserve
-this invariant.
-
-No downstream project may reinterpret, bypass, or ignore the external effect
-boundary.
+Downstream implementations MAY vary, but MUST preserve the guarantees above.

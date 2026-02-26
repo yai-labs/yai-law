@@ -1,149 +1,129 @@
-# I-002 — Determinism and Reproducibility
+# I-002 — Determinism and Reproducibility (Normative)
 
-This document defines determinism and reproducibility as structural invariants of YAI.
+## Summary
+Determinism and reproducibility are structural invariants of YAI.
 
-Determinism in YAI is not about predictability or simplicity.
-It is about ensuring that system behavior can be reproduced, inspected,
-and reasoned about within defined boundaries.
+Determinism is required to preserve traceability (I-001).
+Reproducibility is required to preserve authority and governance (I-003).
 
-Without determinism, traceability collapses.
-Without reproducibility, authority and governance cannot be enforced.
+A system that cannot be deterministically reasoned about within declared scope is not a valid instance of YAI.
 
-A system that cannot be deterministically reasoned about
-is not a valid instance of YAI.
+## Definitions
+**Determinism**: given the same initial conditions and constraints, the system produces equivalent outcomes within a defined execution scope.
 
----
+**Reproducibility**: the ability to re-execute or reconstruct a run and obtain behaviorally equivalent results within that scope.
 
-## Definition
+Determinism in YAI is about reconstructing past behavior, not predicting future behavior.
 
-In YAI, **determinism** is the property by which system behavior,
-given the same initial conditions and constraints,
-produces equivalent outcomes within a defined execution scope.
+## Scope
+Applies to any execution surface that:
+- evaluates authority/policy and produces decisions
+- performs state transitions (kernel/engine/mind/session/memory)
+- produces artifacts intended for verification
 
-**Reproducibility** is the ability to re-execute or reconstruct
-a system run and obtain behaviorally equivalent results.
+Determinism is always **scope-defined** and **boundary-aware**.
 
-Determinism and reproducibility are **structural invariants**:
-they must always hold, regardless of implementation, scale, or context.
+## Normative requirements (MUST/SHOULD)
 
----
+1) **Scope declaration**
+- Each Run MUST declare (explicitly or via referenced config) the scope under which determinism is claimed (inputs, constraints, and boundaries).
 
-## Determinism in YAI Is Not
+2) **Deterministic evaluation**
+- Given identical inputs and the same policy/baseline material, governance evaluation MUST produce equivalent outcomes (allow/deny/error) and equivalent reason codes.
 
-Determinism in YAI does **not** mean:
+3) **Bounded nondeterminism**
+- Any nondeterminism MUST be explicitly bounded and declared (e.g. randomness only in proposal/inference, not in governed execution), and MUST NOT leak into unverifiable outcomes.
 
-- Global predictability
-- Absence of randomness
-- Single-threaded execution
-- Identical low-level execution traces
-- Suppression of probabilistic components
+4) **Reconstruction requirement**
+- The evidence set MUST allow reconstruction of *why* an outcome occurred within the declared scope (inputs, constraints, decision basis).
 
-YAI explicitly allows complexity.
-It does not allow ambiguity.
+5) **Seed / configuration stability**
+- If a seed is used, it MUST be recorded and bound to the Run metadata.
+- If environment/toolchain affects behavior, an environment fingerprint SHOULD be recorded.
 
----
+6) **Concurrency / distribution**
+- Scaling, concurrency, and distribution MUST NOT violate determinism guarantees within the declared scope.  
+  (Internal traces may differ; invariant-level outcomes must remain equivalent.)
 
-## Properties of the Determinism Invariant
+7) **Verification offline**
+- A verifier MUST be able to validate determinism and reproducibility claims offline using only bundle contents and schemas (no network).
 
-All YAI-compliant systems must satisfy the following:
+## ABI anchors
 
-- **Scope-defined determinism**  
-  Determinism is defined relative to an explicit execution scope.
+### Primitives used (conceptual ABI)
+- `S-034 Seed`
+- `S-017 Fingerprint`
+- `S-009 Clock` (ordering constraints)
+- `S-010 Record`
+- `S-011 Timeline`
+- `S-004 Hash`
+- `S-008 Validate`
+- `T-006 Policy`
+- `T-007 Decision`
+- `T-008 Outcome`
+- `T-009 ReasonCode`
+- `T-012 Run`
+- `T-013 Wave`
+- `T-014 Bundle`
+- `T-015 Verification`
 
-- **Boundary-aware nondeterminism**  
-  Nondeterminism is allowed only where explicitly bounded and declared.
+### Required artifact roles (v1)
+- `policy` (policy material + hash)
+- `decision_record` (outcomes + reason codes)
+- `bundle_manifest` (integrity + selection)
+- `evidence_index` (inventory + hashes)
+- `verification_report` (PASS/FAIL + findings)
 
-- **Traceable outcomes**  
-  All nondeterministic behavior must remain traceable and attributable.
+Recommended (when available):
+- `containment_metrics` (aggregations useful for stability budgets)
+- environment fingerprint artifact if you later standardize one (not yet in v1 roles)
 
-- **Reconstructability**  
-  It must be possible to reconstruct *why* a given outcome occurred.
+### Commands involved (if any)
+System-wide invariant. At minimum, enforcement MUST be exercised by:
+- `yai.verify.verify`
 
-- **Invariant-preserving**  
-  Determinism must not be violated by scaling, concurrency, or distribution.
+Other commands that produce runs SHOULD preserve determinism metadata (seed/env/policy hash) when applicable.
 
----
+## Verification procedure (offline)
+A verifier MUST be able to check the following without re-running the system:
 
-## Determinism vs Other Concepts
+1) **Integrity & immutability**
+- `bundle_manifest` hashes match actual files.
+- `evidence_index` covers required roles.
 
-### Determinism vs Predictability
+2) **Policy determinism basis**
+- `policy.policy_hash` exists and is consistent with the policy referenced inside decisions.
 
-- Predictability concerns forecasting future behavior.
-- Determinism concerns reconstructing past behavior.
+3) **Decision equivalence basis**
+- `decision_record` lines include:
+  - policy hash/pointer
+  - baseline reference (when applicable)
+  - outcome + reason_code
+  - stable identity/authority references when relevant
 
-A system may be deterministic without being predictable.
-YAI requires determinism, not predictability.
+4) **Reproducibility prerequisites**
+- If the run declares or uses a seed, that seed MUST be present in run metadata (either in decision records or associated run evidence).
+- If environment fingerprinting is enabled, fingerprint MUST be present and stable within the bundle.
 
----
+5) **Report**
+- `verification_report` MUST include findings for determinism preconditions (missing seed when required, missing policy hash, inconsistent policy material, etc.)
 
-### Determinism vs Randomness
+## Violation signal (non-exhaustive)
+Determinism/reproducibility is violated if:
+- identical inputs + identical policy material can yield different outcomes/reason codes without declared bounded nondeterminism
+- decisions omit policy hash/pointer or reason codes (cannot reconstruct basis)
+- seeds/config/environment dependencies exist but are not recorded
+- scaling/concurrency changes invariant-level outcomes within the declared scope
+- verification cannot reconstruct why an outcome occurred within scope
 
-- Randomness may exist in inference or decision proposal.
-- Determinism governs execution and state transitions.
+Violations are structural: the system is non-compliant regardless of performance or “intelligence”.
 
-Random inputs do not excuse nondeterministic execution.
+## Non-goals
+This invariant does not prescribe:
+- scheduling algorithms
+- concurrency models
+- RNG implementation
+- replay tooling specifics
+- testing strategy design
 
----
-
-### Determinism vs Implementation
-
-- Implementations may vary.
-- Deterministic guarantees must not.
-
-Two different implementations may behave differently internally,
-but must remain equivalent at the invariant level.
-
----
-
-## Relationship to Other Invariants
-
-- **Traceability (I-001)**  
-  Determinism is a prerequisite for traceability.
-  Without deterministic structure, reconstruction is impossible.
-
-- **Governance (I-003)**  
-  Governance relies on reproducible behavior to enforce responsibility.
-
-Determinism is a foundational constraint that enables other invariants
-to remain enforceable over time.
-
----
-
-## Consequences of Violation
-
-If determinism or reproducibility is violated:
-
-- System behavior cannot be reliably reconstructed
-- Authority decisions cannot be justified
-- Governance loses enforceability
-- The system ceases to be YAI-compliant
-
-Violations are structural, not operational errors.
-
----
-
-## Scope Notes
-
-This document does not define:
-
-- Scheduling algorithms
-- Concurrency models
-- Random number generation
-- Replay tooling or mechanisms
-- Testing strategies
-
-Those concerns belong to downstream projects
-and must comply with this invariant.
-
----
-
-## Canonical Status
-
-This document is authoritative.
-
-All YAI components that execute, decide, or evolve state
-must be designed so that this invariant is preserved.
-
-Any system claiming YAI compliance
-must be able to justify its determinism guarantees
-within the boundaries defined here.
+Downstream implementations may choose any mechanism, but MUST preserve the guarantees above.

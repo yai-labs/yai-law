@@ -1,211 +1,140 @@
-# I-004 — Governable Cognitive Reconfiguration
+# I-004 — Governable Cognitive Reconfiguration (Structural Invariant, Normative)
+
+## Summary
+Governable cognitive reconfiguration is a structural invariant: when cognitive assumptions become invalid, execution MUST NOT continue under known invalid configurations.
 
-This document defines **governable cognitive reconfiguration**
-as a structural invariant of YAI.
+Invalidation MUST cause suspension (default) or explicitly authorized constraint.
+Reconfiguration MUST be explicit, inspectable, traceable, and authority-bound.
+Resumption MUST require renewed authority.
 
-In YAI, cognitive reconfiguration is not an optimization technique,
-a learning behavior, or a recovery strategy.
-It is a permanent structural constraint that determines
-whether execution may continue
-when the system’s cognitive assumptions become invalid.
+A system that adapts implicitly or continues execution under invalid cognitive configurations is not a valid instance of YAI.
+
+## Definitions
+**Cognitive configuration**: the explicit set of assumptions, constraints, goals/priorities, and contextual validity under which execution may proceed.
+
+**Cognitive invalidation**: an explicit, verifiable signal that the current configuration no longer supports valid execution.
 
-Without governable cognitive reconfiguration,
-execution may proceed under false assumptions,
-responsibility becomes ambiguous,
-and intelligent behavior degrades into uncontrolled adaptation.
+**Cognitive reconfiguration**: an explicit, authority-bound transition from one cognitive configuration to another performed in response to invalidation.
+
+Governable cognitive reconfiguration constrains **when** execution may proceed, not **how** adaptation is implemented.
 
-A system that adapts implicitly
-or continues execution under invalid cognitive configurations (cognitive models)
-is not a valid instance of YAI.
+## Scope
+Applies to any execution surface that:
+- proposes or selects intents (L3)
+- routes, plans, or orchestrates under cognitive assumptions
+- can trigger transitions that may cross the external effect boundary
+- can mutate long-lived cognitive configuration
+
+This invariant is system-wide, continuous, and non-bypassable.
+
+## Normative requirements (MUST/SHOULD)
+
+1) **Execution subordinated to cognitive validity**
+- Execution MUST only proceed while the active cognitive configuration is valid within declared scope.
+
+2) **Mandatory suspension on invalidation (default)**
+- Upon detected invalidation, execution MUST be suspended by default.
+- Constraint (instead of full suspension) MAY occur only when explicitly authorized and traceable.
+
+3) **Invalidation must be verifiable**
+- Invalidation MUST be based on verifiable internal signal or traceable evidence (I-001), not on un-auditable “model sentiment”.
+
+4) **Explicit, inspectable transition**
+- Reconfiguration MUST be represented as an explicit transition (not implicit drift).
+- The system MUST preserve evidence sufficient to reconstruct:
+  - what became invalid
+  - what configuration was active before
+  - what configuration became active after
+  - the scope affected
+  - the authority under which reconfiguration and resumption occurred
+
+5) **Authority-bound resumption**
+- Resuming execution after invalidation/reconfiguration MUST require renewed authority evaluation.
+- Reconfiguration MUST NOT self-authorize.
+
+6) **Non-bypassability**
+- No component MAY ignore, override, or “skip” reconfiguration constraints to proceed with execution.
+- Any attempt to bypass MUST be detectable and consequential (I-003).
+
+7) **Determinism / reproducibility**
+- Reconfiguration and its authorization basis MUST be reproducible within declared scope (I-002), sufficient to enforce responsibility over time.
+
+## ABI anchors
+
+### Primitives used (conceptual ABI)
+- `T-001 Event` (invalidation trigger/event)
+- `T-002 Identity`
+- `T-003 Authority`
+- `T-006 Policy` (authorization basis for constrain/resume)
+- `T-007 Decision` (suspend/allow/deny transition gating)
+- `T-008 Outcome`
+- `T-009 ReasonCode`
+- `T-010 Effect` (especially if resumption enables external effects)
+- `T-011 Evidence`
+- `T-012 Run`
+- `T-015 Verification`
+- `S-010 Record`
+- `S-011 Timeline`
+- `S-013 Index`
+- `S-004 Hash`
+- `S-008 Validate`
+
+(Conceptual mapping: “reconfiguration” is an authority-bound transition recorded as events/decisions/evidence; a dedicated artifact role can be added later.)
+
+### Required artifact roles (v1)
+To prove governable reconfiguration offline, evidence MUST include (as applicable):
+
+- `decision_record` (records suspension/constraint/resumption decisions and reason codes)
+- `policy` (authorization basis)
+- `evidence_index` (inventory + hashes)
+- `bundle_manifest` (sealed inventory)
+- `verification_report` (PASS/FAIL findings)
+
+Optional (recommended when available):
+- `containment_metrics` (to support consequence/stability analysis)
+
+### Commands involved (if any)
+This invariant is system-wide. Typical surfaces involved include:
+- `yai.control.chat` (cognitive sessions)
+- `yai.memory.graph` / `yai.memory.embed` (cognitive surfaces)
+- `yai.control.kernel` (authority boundary and workspace lifecycle)
+- `yai.verify.verify` (offline enforcement)
 
----
+Command IDs are canonical in `law/abi/registry/commands.v1.json`.
 
-## Definition
+## Verification procedure (offline)
+A verifier MUST be able to validate, without network access:
 
-In YAI, **governable cognitive reconfiguration** is the structural property that ensures:
+1) **Evidence integrity**
+- `bundle_manifest` hashes match actual files.
+- `evidence_index` includes required roles.
 
-- execution never proceeds under known invalid assumptions
-- cognitive invalidation results in suspension or constraint of execution
-- reconfiguration of cognitive configuration is explicit and inspectable
-- resumption of execution requires renewed authority
-- adaptive behavior remains accountable over time
+2) **Invalidation → suspension/constraint**
+- For any recorded invalidation event (domain-specific), there MUST exist a corresponding decision path resulting in suspension by default, or an explicitly authorized constrained mode.
 
-Cognitive reconfiguration applies system-wide and continuously.
-It is not conditional and cannot be bypassed.
-Invalidation must be based on a verifiable internal signal or traceable evidence (per I-001), not model sentiment.
+3) **Resumption is authority-bound**
+- Any return to normal execution after invalidation MUST be preceded by an authority evaluation and recorded decision(s).
+- Decisions MUST include policy hash/pointer and reason codes indicating reconfiguration/resumption conditions.
 
-Governable cognitive reconfiguration is a **structural invariant**:
-it must always hold, regardless of execution mode, scale, or deployment.
+4) **Non-bypassability signal**
+- The evidence set MUST NOT allow “continued execution under invalidation without decision”.
+- Any bypass attempt MUST surface as FAIL findings in `verification_report` (or be detectable by missing required decision/evidence).
 
----
+## Violation signal (non-exhaustive)
+This invariant is violated if:
+- execution continues after known invalidation without suspension/authorized constraint
+- reconfiguration occurs implicitly without inspectable evidence
+- resumption occurs without renewed authority evaluation
+- invalidation is based on un-verifiable sentiment and cannot be audited
+- bypass is possible or not consequential
 
-## Cognitive Reconfiguration in YAI Is Not
+Violations are structural: the system is non-compliant regardless of observed usefulness.
 
-Cognitive reconfiguration in YAI is **not**:
+## Non-goals
+This invariant does not prescribe:
+- learning algorithms or adaptation mechanisms
+- invalidation detection strategy
+- control architecture or enforcement mechanism
+- storage/query/index implementation details
 
-- error handling or exception management
-- retry or fallback logic
-- performance optimization
-- autonomous self-modification
-- learning-driven parameter drift
-- heuristic adaptation
-
-Those mechanisms may exist downstream.
-They do not define cognitive reconfiguration in YAI.
-
-YAI cognitive reconfiguration constrains
-when execution is allowed,
-not how adaptation is implemented.
-
----
-
-## Core Properties of the Cognitive Reconfiguration Invariant
-
-All YAI-compliant systems must satisfy the following:
-
-- **Execution subordination to cognitive validity**  
-  Execution may occur only while its cognitive assumptions remain valid.
-
-- **Mandatory suspension on invalidation**  
-  Detected cognitive invalidation requires suspension or constraint of execution.
-  Default action is suspension; constraint is permitted only when explicitly authorized.
-
-- **Explicit reconfiguration**  
-  Cognitive changes must be represented as explicit, inspectable transitions.
-
-- **Authority-bound resumption**  
-  Execution may resume only after renewed authorization.
-
-- **Non-bypassability**  
-  No component may ignore or override cognitive reconfiguration.
-
-- **Implementation independence**  
-  These constraints apply regardless of architecture, model, or technology.
-
----
-
-## Canonical Reconfiguration Record
-
-A cognitive reconfiguration transition MUST be representable as an inspectable artifact.
-
-YAI defines the canonical concept of a **Reconfiguration Record**:
-
-A Reconfiguration Record is the minimal, authoritative representation of:
-
-- a detected invalidation
-- a suspended or constrained execution
-- an authorized transition from one cognitive configuration to another
-- an accountable resumption boundary
-
-A valid Reconfiguration Record MUST include, at minimum:
-
-- an explicit **invalidation statement** (what became invalid)
-- a reference to the **prior cognitive configuration**
-- a description of the **new cognitive configuration**
-- the **reconfiguration scope** (what cognitive surface is affected)
-- the **authority reference** under which reconfiguration and resumption are permitted
-- a traceability linkage to evidence (per I-001) sufficient to reconstruct the transition
-
-Execution resumption MUST be able to reference a corresponding Reconfiguration Record.
-Reconfiguration without an inspectable record is structurally non-compliant.
-
-A Reconfiguration Record is not “State” as defined in A-003.
-State remains a derived post-execution artifact.
-The Reconfiguration Record is an authority-bound artifact representing a cognitive configuration transition.
-
----
-
-## Cognitive Reconfiguration vs Other Concepts
-
-### Cognitive Reconfiguration vs Error Handling
-
-- Error handling preserves the existing cognitive configuration.
-- Cognitive reconfiguration reorganizes the configuration itself.
-
-Error handling operates within assumptions.
-Cognitive reconfiguration addresses failed assumptions.
-
----
-
-### Cognitive Reconfiguration vs Learning
-
-- Learning modifies knowledge over time.
-- Cognitive reconfiguration determines whether execution may continue now.
-
-Learning may occur within YAI.
-Reconfiguration governs the validity of action.
-
----
-
-### Cognitive Reconfiguration vs Governance
-
-- Governance constrains authority and responsibility.
-- Cognitive reconfiguration constrains execution validity.
-
-Cognitive reconfiguration operates under governance.
-Governance enforces reconfiguration.
-
----
-
-## Relationship to Other Invariants
-
-- **Traceability (I-001)**  
-  Cognitive reconfiguration must be traceable to preserve accountability.
-
-- **Determinism (I-002)**  
-  Cognitive reconfiguration must be reproducible to enforce responsibility over time.
-
-- **Governance (I-003)**  
-  Cognitive reconfiguration must not self-authorize and must remain governable.
-
-- **External Effect Boundary (I-006)**  
-  When cognitive reconfiguration enables transitions that cross the external effect boundary,
-  strengthened authority and evidence constraints apply.
-
-Without these invariants,
-cognitive reconfiguration becomes arbitrary.
-
----
-
-## Consequences of Violation
-
-If governable cognitive reconfiguration is violated:
-
-- execution may proceed under false assumptions
-- responsibility cannot be enforced
-- long-running behavior becomes unsafe
-- adaptation becomes indistinguishable from failure
-
-Such violations invalidate YAI compliance.
-They are structural failures, not runtime errors.
-
----
-
-## Scope Notes
-
-This document does not define:
-
-- adaptation mechanisms
-- learning algorithms
-- detection strategies
-- control architectures
-- runtime enforcement logic
-
-Those concerns belong to downstream projects
-and must comply with the invariant defined here.
-
----
-
-## Canonical Status
-
-This document is authoritative.
-
-All YAI components that execute actions,
-adapt cognitive configuration,
-or evolve behavior over time
-must preserve this invariant.
-
-Any system claiming YAI compliance
-must be able to demonstrate
-that cognitive reconfiguration is explicit,
-authorized, and structurally enforced.
+Downstream implementations MAY vary, but MUST preserve the guarantees above.

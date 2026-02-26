@@ -1,214 +1,138 @@
-# I-005 — Abstract Cost Accountability as a Structural Invariant
+# I-005 — Abstract Cost Accountability (Structural Invariant, Normative)
 
-## Purpose
+## Summary
+Abstract cost accountability is a structural invariant: every valid transition MUST be attachable to one or more cost attributes within a declared, versioned metric space.
 
-This document defines **abstract cost accountability** as a **structural invariant**
-in YAI.
+YAI does not treat cost as business logic or billing. Cost accountability exists to keep execution governable and claims defensible (efficiency, risk, resource usage) without speculation.
 
-YAI does not treat cost as business logic or financial accounting.
-Instead, YAI requires that execution remains **governable**, which implies that
-every valid state transition can be associated with a **canonical** cost representation
-in an abstract metric space.
+A system that allows valid transitions that cannot be cost-accounted is not a valid instance of YAI.
 
-Abstract cost accountability exists so that claims about efficiency, risk,
-and resource usage can be made **without speculation**, grounded in traceable
-execution semantics.
+## Definitions
+**Abstract cost accountability**: the property by which every valid transition can be associated with one or more abstract cost attributes within a declared metric space.
 
-Without abstract cost accountability, economic and operational reasoning about YAI
-becomes arbitrary and non-defensible.
+**Metric space**: a named, versioned taxonomy of cost dimensions (e.g., time/compute/memory/I/O/tokens/energy/risk) with declared units or ordering semantics.
 
----
+Cost accountability requires attachability and interpretability, not monetary units.
 
-## Definition
+## Scope
+Applies to:
+- any governed transition that mutates state or produces effects
+- any transition that crosses the external effect boundary (I-006)
 
-In YAI, **abstract cost accountability** is the property by which every **valid**
-state transition can be associated with one or more **abstract cost attributes**
-within a declared metric space.
+This invariant is non-bypassable and applies uniformly across components.
 
-Abstract cost attributes may include (non-exhaustive):
+## Normative requirements (MUST/SHOULD)
 
-- time
-- compute
-- memory
-- I/O
-- tokens
-- energy
-- credits
-- risk
+1) **Declared metric space**
+- Each Run (or bundle context) MUST declare an active cost metric space identifier and version (e.g., `yai.cost.v1`).
+- The metric space MUST define its dimensions and units/ordering semantics.
 
-A transition is **cost-accountable** if:
+2) **Per-transition attachability**
+- Every valid governed transition MUST be linkable to one or more cost attributes in the declared metric space.
+- Cost attribution MUST NOT be ambiguous within the YAI conceptual model.
 
-- it is a valid execution transition under authority, and
-- it can be associated with one or more abstract cost attributes, and
-- that association is not ambiguous within the YAI conceptual model.
+3) **Traceability linkage**
+- Cost attribution MUST be traceably linkable to a specific transition (I-001), not only aggregated at run-level.
+- At minimum, cost attribution MUST be joinable to decisions/events by stable identifiers (e.g., decision_id, event_id, run_id).
 
-Cost accountability does **not** require monetary units.
-It requires attachability and interpretability.
+4) **Governance compatibility**
+- Cost attribution MUST remain compatible with determinism/reproducibility constraints (I-002): reconstruction of “what cost was attributed and why” MUST be possible within declared bounds.
 
----
+5) **External-effect risk dimension**
+- Transitions crossing the external effect boundary MUST include a risk dimension (or equivalent) in the declared metric space.
+- External effects without explicit risk attribution are invalid transitions.
 
-## Canonical Cost Metric Space
+6) **Completeness**
+- The system MUST NOT allow classes of governed transitions that are exempt from cost accountability.
 
-YAI operates on a **declared cost metric space**.
+7) **Verification offline**
+- A verifier MUST be able to validate cost-accountability evidence offline using bundle contents and schemas.
 
-A cost metric space is **canonical** only if it is:
+## ABI anchors
 
-- **declared** (explicitly named as the active cost taxonomy)
-- **versioned** (identifier + version, e.g. `yai.cost.v1`)
-- **dimensioned** (a defined set of cost dimensions, e.g. time/compute/memory/I/O/tokens/risk)
-- **interpretable** (each dimension has a declared unit/scale or ordering semantics)
-- **scoped** (the space specifies what kinds of transitions it applies to)
+### Primitives used (conceptual ABI)
+- `T-001 Event`
+- `T-002 Identity`
+- `T-003 Authority`
+- `T-007 Decision`
+- `T-010 Effect`
+- `T-011 Evidence`
+- `T-012 Run`
+- `T-014 Bundle`
+- `T-015 Verification`
+- `S-004 Hash`
+- `S-008 Validate`
+- `S-011 Timeline`
+- `S-013 Index`
 
-The system must be able to say: *this transition is cost-attributed under this declared metric space*.
-If the metric space is not declared and versioned, cost attribution is ambiguous.
+(Conceptual mapping: cost accountability is a governed, traceable annotation of transitions and effects within a declared metric space.)
 
----
+### Required artifact roles (v1)
+To prove cost accountability offline, bundles MUST provide:
 
-## Invariant Status
+- `decision_record` (per-transition linkage anchor)
+- `containment_metrics` (cost dimensions as metric entries, with units)
+- `evidence_index` (inventory + hashes)
+- `bundle_manifest` (sealed inventory)
+- `verification_report` (PASS/FAIL findings)
 
-Abstract cost accountability is a **structural invariant** in YAI.
+Recommended:
+- `policy` (when cost constraints are policy-governed)
 
-As such:
+### Commands involved (if any)
+System-wide invariant. Enforcement MUST be exercised at minimum by:
+- `yai.verify.verify`
 
-- It is **not optional**
-- The requirement is **non-bypassable**
-- The metric space is **explicitly declared and versioned**
-- It is **not context-dependent**
-- It applies uniformly across all YAI components
+Commands that create/execute transitions SHOULD preserve cost attribution evidence when applicable (e.g., run/test/wave drivers).
 
-Any YAI system that allows valid transitions that cannot be cost-accounted
-is **not a valid instance of YAI**.
+## Verification procedure (offline)
+A verifier MUST be able to validate:
 
----
+1) **Integrity**
+- `bundle_manifest` hashes match real files.
+- `evidence_index` covers required roles.
 
-## Relationship to YAI Axioms
+2) **Metric space declaration**
+- Evidence set includes a declared metric space identifier/version (may be embedded in metrics metadata, run metadata, or policy context).
+- Dimensions in `containment_metrics` are interpretable (unit present for each metric entry).
 
-Abstract cost accountability derives from YAI axioms:
-
-- Execution causes state transitions and produces consequences.
-- Authority makes execution valid and accountable.
-- State must remain inspectable as a product of authorized execution.
-
-If execution produces consequences without cost accountability,
-the system cannot remain governable over time.
-
----
-
-## Relationship to Other Invariants
-
-### Cost Accountability and Traceability (I-001)
-
-Abstract cost accountability depends on traceability:
-
-- cost attribution must be attachable to a specific transition
-- transitions must be attributable to authority and intent
-- semantic evidence must exist to justify what occurred
-
-Cost without traceability is non-defensible and invalid.
-
----
-
-### Cost Accountability and Determinism (I-002)
-
-Determinism and reproducibility enable verification and comparison.
-
-Abstract cost accountability does not require identical values across runs,
-but it requires that cost attribution remains:
-
-- reconstructible
-- explainable within declared bounds
-- consistent with bounded non-determinism
-
----
-
-### Cost Accountability and Governance (I-003)
-
-Governance requires the ability to reason about admissibility and constraints.
-
-If transitions cannot be cost-accounted, governance cannot evaluate tradeoffs
-between resource usage, risk, and authorization constraints.
-
----
-
-### Cost Accountability and External Effect Boundary (I-006)
-
-Transitions that cross the **external effect boundary** MUST include a **risk**
-dimension (or equivalent) within the declared cost metric space.
-
-External effects without explicit cost/risk attribution are not valid transitions.
-
----
-
-## Cost Accountability vs Other Concepts
-
-### Cost Accountability vs Billing
-
-Billing assigns prices and invoices.
-YAI cost accountability defines only the abstract semantic requirement
-that cost can be attached to transitions.
-
-Billing belongs to downstream projects.
-
----
-
-### Cost Accountability vs Performance Metrics
-
-Performance metrics imply optimization goals.
-YAI cost accountability implies no optimization objective.
-It only asserts that cost is definable and attributable.
-
----
-
-## Scope Clarifications
-
-This invariant defines **what must be true**, not **how it is implemented**.
-
-This document does **not** define:
-
-- measurement or instrumentation systems
-- telemetry formats or schemas
-- dashboards or reporting tooling
-- KPI taxonomies or economic formulas
-- optimization or scheduling strategies
-
-Those concerns belong to downstream projects and must comply
-with the invariant defined here.
-
----
-
-## Invalid Patterns
-
-The following patterns are **invalid** in YAI:
-
+3) **Per-transition linkage**
+- There exists a defensible linkage from cost entries to governed transitions:
+  - either explicit identifiers (decision_id/event_id) in metrics entries,
+  - or a deterministic join path via run_id + timeline + event/decision references.
+- Purely run-level aggregate without any link to transitions is insufficient for compliance.
+
+4) **External-effect risk**
+- For any external-effect class present, there MUST be a corresponding risk dimension entry (or equivalent) attributable within the metric space.
+
+5) **Report**
+- `verification_report` MUST surface FAIL findings for:
+  - missing metric space declaration
+  - missing units/interpretability
+  - lack of per-transition linkage
+  - external effects without risk attribution
+
+## Invalid patterns (non-exhaustive)
 - valid transitions without cost attribution
-- cost attribution that cannot be linked to a specific transition
+- attribution that cannot be linked to a specific transition
 - metric space not declared or not versioned
-- partial attribution (some components excluded from cost accountability)
-- cost aggregated only at run-level without per-transition linkage
-- external-effect transitions without a risk dimension in the declared space
+- partial attribution (some components exempt)
+- only run-level aggregates with no per-transition joinability
+- external-effect transitions without risk dimension
 
----
-
-## Consequences of Violation
-
-If abstract cost accountability is violated:
-
-- cost cannot be attributed to transitions
-- efficiency claims become speculative
+## Violation signal
+If violated:
+- cost cannot be attributed defensibly
+- efficiency/risk claims become speculative
 - governance cannot defend resource and risk decisions
-- economic reasoning becomes arbitrary
 
-Such a system cannot be considered compliant with YAI,
-regardless of correctness or performance.
+Violations are structural: the system is non-compliant regardless of correctness or performance.
 
----
+## Non-goals
+This invariant does not prescribe:
+- telemetry/instrumentation mechanisms
+- dashboards/reporting tooling
+- KPI taxonomies or economic formulas
+- optimization objectives or scheduling strategies
 
-## Canonical Status
-
-This document is **canonical**.
-
-All YAI runtimes, engines, governance layers, and interfaces must preserve
-this invariant.
-
-No downstream project may reinterpret, bypass, or remove the requirement
-that every valid transition is abstractly cost-accountable.
+Downstream implementations MAY vary, but MUST preserve the guarantees above.

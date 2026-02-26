@@ -1,78 +1,117 @@
-# I-001 — Traceability
+# I-001 — Traceability (Normative)
 
-## Invariant Statement
-
-In YAI, traceability is non-negotiable.
-
-Every action, decision, and state transition that is considered valid must be:
-
-- attributable to an explicit authority source and a declared intent
-- reconstructable after execution
-- explainable within YAI’s conceptual model (authority → intent → conditions → effects)
-
-Traceability is not a tooling feature. It is a structural property of the system.
+## Summary
+Traceability is non-negotiable. Any valid action, decision, or state transition in YAI MUST be attributable, reconstructable, and explainable within the YAI governance model.
 
 A system that cannot preserve traceability cannot preserve authority, governance, or responsibility, and is therefore not a valid instance of YAI.
 
-## What This Invariant Constrains
+## Scope
+This invariant applies to any component that can:
+- produce an action or effect
+- evaluate or enforce authority/policy
+- mutate state (kernel/engine/mind/session/memory)
+- emit evidence intended for verification
 
-This invariant constrains any component or layer that can produce, authorize, trigger, or record behavior, including:
+This invariant defines *what must be true*, not implementation mechanics.
 
-- actions (external effects, I/O, writes, emissions)
-- decisions (routing, planning, selection, scoring, resolution)
-- state transitions (kernel, engine, mind state, session state, memory state)
-- authority enforcement (permit/deny, gating outcomes, policy evaluation)
+## Normative requirements (MUST/SHOULD)
 
-To satisfy traceability, YAI must preserve minimum semantic evidence for every valid action or transition:
+1) **Attribution**
+- Every governed transition MUST reference an explicit identity and authority source.  
+- Every governed transition MUST reference a declared intent (what was attempted).
 
-### Attribution
+2) **Authorization basis**
+- If an action is allowed or denied, the system MUST preserve the policy/baseline context used for evaluation (at least by hash/pointer) and the reason code.
 
-- a canonical authority reference (subject/role/policy or equivalent authority source)
-- a declared intent or purpose (what was being attempted, not just what happened)
+3) **Causal reconstruction**
+- For every valid transition, the system MUST preserve enough semantic evidence to reconstruct:
+  - inputs (what the transition acted upon)
+  - outputs (what the transition produced)
+  - effects (what changed, including external effects)
+  - causal linkage (why this path occurred rather than alternatives)
 
-### Authorization Conditions
+4) **External effects**
+- No external effect may occur without an attributable and explainable decision record.
 
-- the gating conditions that permitted it (rules, constraints, preconditions)
-- the relevant context used to authorize (inputs to control, not just inference)
+5) **Semantic integrity**
+- “Trace records” MUST remain semantically meaningful in the YAI model.  
+  Timestamps alone are insufficient: authority + intent + conditions MUST be present.
 
-### Causal Evidence
+6) **Completeness**
+- Traceability MUST NOT be partial in a way that permits unaccountable execution.
 
-- inputs (what it acted upon)
-- outputs (what it produced)
-- effects (what changed, including external effects)
-- causal linkage (why this occurred rather than an alternative path)
+## ABI anchors
 
-Important: this is not a log format requirement. It is a requirement that evidence remains causally and semantically meaningful in the YAI model.
+### Primitives used (conceptual ABI)
+- `T-001 Event`
+- `T-002 Identity`
+- `T-003 Authority`
+- `T-006 Policy`
+- `T-007 Decision`
+- `T-008 Outcome`
+- `T-009 ReasonCode`
+- `T-010 Effect`
+- `T-011 Evidence`
+- `T-012 Run`
+- `T-014 Bundle`
+- `T-015 Verification`
+- `S-010 Record`
+- `S-011 Timeline`
+- `S-013 Index`
+- `S-014 Manifest`
+- `S-004 Hash`
+- `S-008 Validate`
 
-## Violation Signal
+### Required artifact roles (v1)
+The following artifact roles MUST be sufficient to prove traceability claims offline (as applicable to the execution surface):
 
-Traceability is violated if any of the following are true:
+- `decision_record`
+- `policy`
+- `evidence_index`
+- `bundle_manifest`
+- `verification_report`
 
-- an action or state transition exists without a traceable authority reference
-- an action or state transition exists without a declared intent
-- a transition exists but cannot be causally reconstructed (missing conditions, inputs, or effects)
-- the system can produce external effects that are not attributable and explainable
-- trace records exist but are semantically meaningless (timestamps without authority, intent, or conditions)
-- tracing is partial in a way that allows unaccountable execution
+Optional (recommended when available):
+- `containment_metrics` (to support accountability/aggregation, not required for attribution)
 
-When violated:
+### Commands involved (if any)
+This invariant is system-wide (not command-specific).  
+However, at minimum, verification MUST be enforced by:
 
-- authority cannot be validated
-- governance cannot be enforced
-- responsibility cannot be assigned
-- behavior cannot be reconstructed
+- `yai.verify.verify`
 
-Therefore, the system is non-compliant with YAI regardless of correctness, performance, or intelligence.
+Other commands MAY emit traces/evidence, but MUST NOT weaken the invariant.
 
-## Notes on Scope
+## Verification procedure (offline)
+A verifier MUST be able to validate traceability without network access, using only bundle contents and schemas.
 
-This document defines what must be true, not how to implement it.
+Minimum checks:
+1) `bundle_manifest` exists and hashes resolve to actual files.
+2) `evidence_index` exists and covers all required roles referenced by claims.
+3) `decision_record` entries:
+   - include identity/authority reference
+   - include policy hash/pointer + baseline reference where applicable
+   - include outcome + reason_code
+   - if an external effect is present, it is linked to a decision (decision precedes effect)
+4) `policy` material exists (or is referenced immutably) and its hash matches what appears in decisions.
+5) `verification_report` reports PASS/FAIL for these checks.
 
-It does not prescribe:
+## Violation signal (non-exhaustive)
+Traceability is violated if any of the following hold:
 
-- logging pipelines, formats, or tooling
-- observability metrics
-- storage, index, or query mechanisms
-- instrumentation frameworks
+- an action/effect exists without authority + identity attribution
+- a governed transition exists without declared intent reference
+- a decision exists without policy hash/pointer and reason code
+- external effects can occur without an attributable decision
+- trace artifacts exist but are semantically meaningless (timestamps without authority/intent/conditions)
+- evidence inventory cannot reconstruct causal linkage for a transition
 
-Those belong to downstream layers, but they must not weaken or reinterpret this invariant.
+When violated: authority cannot be validated, governance cannot be enforced, responsibility cannot be assigned, and the system is non-compliant with YAI regardless of performance or correctness.
+
+## Non-goals
+This invariant does not prescribe:
+- logging pipelines or observability frameworks
+- storage/query/index implementation details
+- metrics tooling
+
+Downstream implementations may choose any mechanism, but MUST preserve the semantics above.
