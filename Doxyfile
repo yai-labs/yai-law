@@ -1,6 +1,6 @@
-# Doxygen configuration for yai-specs
+# Doxygen configuration for yai-law
 
-PROJECT_NAME           = "yai-specs"
+PROJECT_NAME           = "yai-law"
 OUTPUT_DIRECTORY       = dist/docs
 GENERATE_HTML          = YES
 HTML_OUTPUT            = doxygen
@@ -9,13 +9,11 @@ EXTRACT_ALL            = YES
 WARN_IF_UNDOCUMENTED   = YES
 QUIET                  = NO
 RECURSIVE              = YES
-FILE_PATTERNS          = *.h *.md
+FILE_PATTERNS          = *.h *.md *.json
 
-# Inputs
-INPUT                  = contracts \
-                         specs \
+# Inputs (Law v2 canonical)
+INPUT                  = law \
                          formal \
-                         compliance \
                          vectors \
                          docs \
                          README.md \
@@ -23,6 +21,12 @@ INPUT                  = contracts \
                          REGISTRY.md \
                          VERSIONING.md \
                          docs/C_MAINPAGE.md
+
+# Exclusions (optional but keeps noise down)
+EXCLUDE                = dist \
+                         .git \
+                         target \
+                         node_modules
 
 # Markdown
 MARKDOWN_SUPPORT       = YES
