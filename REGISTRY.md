@@ -1,51 +1,88 @@
-# Registry
+# YAI Law Registry
 
-This registry defines the canonical location of normative artifacts and the rules for allocating IDs.
+This registry defines the canonical locations of machine-readable law artifacts and the rules for allocating and evolving identifiers across the YAI law surface.
 
-## ID Registry
+It is the reference index for canonical registries, schemas, headers, and published packs consumed by downstream implementations and validation tooling.
 
-The authoritative ID registry lives in `law/surfaces/protocol/include/yai_protocol_ids.h`.
+## 1) ID registry
+
+The authoritative protocol and surface ID registry lives in:
+
+- `contracts/protocol/include/yai_protocol_ids.h`
 
 Rules:
-- IDs are never reused.
-- Reserved ranges must remain reserved and documented in the header.
-- New IDs require a corresponding spec change and a `CHANGELOG.md` entry.
-- Any change that adds or reclassifies IDs must be reviewed for compatibility impact.
 
-## Normative JSON Contracts
+- IDs are never reused
+- Reserved ranges remain reserved until explicitly reclassified
+- New IDs require a corresponding contract change and a `CHANGELOG.md` entry
+- Any addition, removal, or reclassification of IDs must be reviewed for compatibility impact
 
-- `law/abi/registry/commands.v1.json`
-- `law/abi/schema/commands.v1.schema.json`
-- `compliance/compliance.context.v1.json`
-- `compliance/retention.policy.v1.json`
-- `law/packs/compliance/gdpr-eu/2026Q1/pack.meta.json`
-- `law/packs/compliance/gdpr-eu/2026Q1/retention.defaults.json`
-- `law/packs/compliance/gdpr-eu/2026Q1/taxonomy.data_classes.json`
-- `law/packs/compliance/gdpr-eu/2026Q1/taxonomy.legal_basis.json`
-- `law/packs/compliance/gdpr-eu/2026Q1/taxonomy.purposes.json`
-- `law/surfaces/control/schema/control_plane.v1.json`
-- `law/surfaces/control/schema/authority.json`
-- `law/surfaces/engine/schema/engine_cortex.v1.json`
-- `law/surfaces/graph/schema/graph.v1.json`
-- `law/surfaces/providers/schema/providers.v1.json`
-- `law/surfaces/vault/schema/vault_abi.json`
+## 2) Canonical registries
 
-## Normative C Headers
+These files define the machine-readable registries consumed by tooling and implementations.
 
-- `law/surfaces/protocol/include/protocol.h`
-- `law/surfaces/protocol/include/transport.h`
-- `law/surfaces/protocol/include/yai_protocol_ids.h`
-- `law/surfaces/protocol/include/errors.h`
-- `law/surfaces/protocol/include/auth.h`
-- `law/surfaces/protocol/include/roles.h`
-- `law/surfaces/protocol/include/session.h`
-- `law/surfaces/protocol/include/audit.h`
-- `law/surfaces/protocol/runtime/include/rpc_runtime.h`
-- `law/surfaces/vault/include/yai_vault_abi.h`
+- `registry/primitives.v1.json`
+- `registry/commands.v1.json`
+- `registry/artifacts.v1.json`
 
-## Conformance Vectors
+Associated registry schemas:
 
-Vectors are informative but should be updated when normative behavior changes.
+- `registry/schema/primitives.v1.schema.json`
+- `registry/schema/commands.v1.schema.json`
+- `registry/schema/artifacts.v1.schema.json`
+
+## 3) Canonical transversal schemas
+
+These schemas define repository-wide artifact and policy payloads.
+
+- `schema/bundle_manifest.v1.schema.json`
+- `schema/containment_metrics.v1.schema.json`
+- `schema/decision_record.v1.schema.json`
+- `schema/evidence_index.v1.schema.json`
+- `schema/policy.v1.schema.json`
+- `schema/verification_report.v1.schema.json`
+- `schema/compliance.context.v1.json`
+- `schema/retention.policy.v1.json`
+
+## 4) Canonical contract schemas
+
+These schemas define public interface surfaces.
+
+- `contracts/control/schema/control_plane.v1.json`
+- `contracts/control/schema/authority.json`
+- `contracts/providers/schema/providers.v1.json`
+- `contracts/vault/schema/vault_abi.json`
+- `runtime/engine/schema/engine_cortex.v1.json`
+- `runtime/mind/graph/schema/graph.v1.json`
+
+## 5) Canonical headers
+
+These headers define normative C-facing law surfaces.
+
+- `contracts/protocol/include/protocol.h`
+- `contracts/protocol/include/transport.h`
+- `contracts/protocol/include/yai_protocol_ids.h`
+- `contracts/protocol/include/errors.h`
+- `contracts/protocol/include/auth.h`
+- `contracts/protocol/include/roles.h`
+- `contracts/protocol/include/session.h`
+- `contracts/protocol/include/audit.h`
+- `contracts/protocol/runtime/include/rpc_runtime.h`
+- `contracts/vault/include/yai_vault_abi.h`
+
+## 6) Published normative packs
+
+These published overlays remain part of the canonical law surface when referenced by compatibility and compliance workflows.
+
+- `packs/compliance/gdpr-eu/2026Q1/pack.meta.json`
+- `packs/compliance/gdpr-eu/2026Q1/retention.defaults.json`
+- `packs/compliance/gdpr-eu/2026Q1/taxonomy.data_classes.json`
+- `packs/compliance/gdpr-eu/2026Q1/taxonomy.legal_basis.json`
+- `packs/compliance/gdpr-eu/2026Q1/taxonomy.purposes.json`
+
+## 7) Conformance vectors
+
+Vectors are informative validation artifacts. They do not override normative contracts, but they should be updated whenever normative behavior changes in a way that affects validation expectations.
 
 - `vectors/transport_vectors.json`
 - `vectors/auth_vectors.json`

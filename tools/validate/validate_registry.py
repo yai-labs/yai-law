@@ -8,14 +8,14 @@ from typing import Any, Dict, List, Set, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-PRIMITIVES_REG = REPO_ROOT / "law" / "abi" / "registry" / "primitives.v1.json"
-PRIMITIVES_SCHEMA = REPO_ROOT / "law" / "abi" / "schema" / "primitives.v1.schema.json"
+PRIMITIVES_REG = REPO_ROOT / "registry" / "primitives.v1.json"
+PRIMITIVES_SCHEMA = REPO_ROOT / "registry" / "schema" / "primitives.v1.schema.json"
 
-COMMANDS_REG = REPO_ROOT / "law" / "abi" / "registry" / "commands.v1.json"
-COMMANDS_SCHEMA = REPO_ROOT / "law" / "abi" / "schema" / "commands.v1.schema.json"
+COMMANDS_REG = REPO_ROOT / "registry" / "commands.v1.json"
+COMMANDS_SCHEMA = REPO_ROOT / "registry" / "schema" / "commands.v1.schema.json"
 
-ARTIFACTS_REG = REPO_ROOT / "law" / "abi" / "registry" / "artifacts.v1.json"
-ARTIFACTS_SCHEMA = REPO_ROOT / "law" / "abi" / "schema" / "artifacts.v1.schema.json"
+ARTIFACTS_REG = REPO_ROOT / "registry" / "artifacts.v1.json"
+ARTIFACTS_SCHEMA = REPO_ROOT / "registry" / "schema" / "artifacts.v1.schema.json"
 
 
 def load_json(path: Path) -> Any:

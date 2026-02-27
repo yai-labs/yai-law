@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "yai-law:runtime/mind/graph/schema/graph.v1.json",
+  "title": "YAI Graph v1 Canonical Contract",
+  "description": "Canonical graph-layer contract library for the YAI Mind graph surface.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "kind", "$defs"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "graph_contract_library"
+    }
+  },
+  "$defs": {
+    "layer_kind": {
+      "type": "string",
+      "enum": [
+        "semantic",
+        "episodic",
+        "vector",
+        "activation",
+        "authority"
+      ]
+    },
+
+    "node_id": {
+      "type": "string",
+      "pattern": "^node:[a-zA-Z0-9_-]+:[a-zA-Z0-9._-]+$"
+    },
+
+    "edge_id": {
+      "type": "string",
+      "pattern": "^edge:[a-zA-Z0-9_-]+:node:[a-zA-Z0-9_-]+:[a-zA-Z0-9._-]+:node:[a-zA-Z0-9_-]+:[a-zA-Z0-9._-]+$"
+    },
+
+    "timestamp_epoch_s": {
+      "type": "integer",
+      "minimum": 0
+    },
+
+    "metadata_object": {
+      "type": "object"
+    },
+
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "meta"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/node_id"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "meta": {
+          "$ref": "#/$defs/metadata_object"
+        },
+        "last_seen": {
+          "$ref": "#/$defs/timestamp_epoch_s"
+        }
+      }
+    },
+
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "src", "dst", "rel", "weight"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/edge_id"
+        },
+        "src": {
+          "$ref": "#/$defs/node_id"
+        },
+        "dst": {
+          "$ref": "#/$defs/node_id"
+        },
+        "rel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "weight": {
+          "type": "number"
+        }
+      }
+    },
+
+    "semantic_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "nodes", "edges"],
+      "properties": {
+        "layer": {
+          "type": "string",
+          "const": "semantic"
+        },
+        "nodes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/node" }
+        },
+        "edges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/edge" }
+        }
+      }
+    },
+
+    "episodic_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "source"],
+      "properties": {
+        "layer": {
+          "type": "string",
+          "const": "episodic"
+        },
+        "source": {
+          "type": "string",
+          "description": "Append-only event source reference."
+        }
+      }
+    },
+
+    "vector_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "rebuildable_from"],
+      "properties": {
+        "layer": {
+          "type": "string",
+          "const": "vector"
+        },
+        "rebuildable_from": {
+          "type": "string",
+          "const": "semantic"
+        },
+        "embedding_model": {
+          "type": "string"
+        }
+      }
+    },
+
+    "authority_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "source"],
+      "properties": {
+        "layer": {
+          "type": "string",
+          "const": "authority"
+        },
+        "source": {
+          "type": "string",
+          "description": "Canonical authority source reference."
+        },
+        "read_only": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+
+    "activation_query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["query_text", "k", "hops"],
+      "properties": {
+        "query_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "k": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hops": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+
+    "subgraph_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/node" }
+        },
+        "edges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/edge" }
+        }
+      }
+    },
+
+    "governance_constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "semantic_is_source_of_truth",
+        "vector_is_rebuildable",
+        "activation_is_non_persistent",
+        "authority_is_read_only",
+        "graph_cannot_mutate_kernel_or_vault"
+      ],
+      "properties": {
+        "semantic_is_source_of_truth": {
+          "type": "boolean",
+          "const": true
+        },
+        "vector_is_rebuildable": {
+          "type": "boolean",
+          "const": true
+        },
+        "activation_is_non_persistent": {
+          "type": "boolean",
+          "const": true
+        },
+        "authority_is_read_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "graph_cannot_mutate_kernel_or_vault": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}
