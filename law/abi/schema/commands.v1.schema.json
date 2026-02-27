@@ -73,7 +73,6 @@
         "side_effects": { "type": "array", "items": { "type": "string" } },
 
         "law_hooks": { "type": "array", "items": { "type": "string" } },
-
         "law_invariants": { "type": "array", "items": { "type": "string" } },
         "law_boundaries": { "type": "array", "items": { "type": "string" } },
 
