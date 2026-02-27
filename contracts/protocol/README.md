@@ -1,37 +1,77 @@
 # Protocol
 
-## What It Is
+`contracts/protocol/` contains the canonical protocol and transport surfaces of `yai-law`.
 
-Normative wire, envelope, and ID contracts shared across all consumers.
-The `*.h` files are the canonical interface definitions.
-`runtime/` contains protocol extensions used by runtime-bound transports.
+These artifacts define the shared wire, envelope, transport, session, role, audit, and identifier contracts consumed across YAI implementations and validation tooling.
 
-## Normative Artifacts
+## Scope
 
-- `protocol.h`
-- `transport.h`
-- `yai_protocol_ids.h`
-- `errors.h`
-- `auth.h`
-- `roles.h`
-- `session.h`
-- `audit.h`
-- `runtime/rpc_runtime.h`
+The protocol surface includes:
 
-## Versioning Rules
+* wire and envelope structure
+* transport-facing constants and contracts
+* canonical protocol identifiers
+* error and authorization-related protocol definitions
+* role and session contracts
+* audit-facing protocol definitions
+* runtime-bound protocol support under `runtime/`
 
-- Header constants and IDs are compatibility-critical.
-- Any breaking change requires a repo `MAJOR` bump.
-- New IDs require registry updates and a `CHANGELOG.md` entry.
+## Normative artifacts
+
+Canonical headers:
+
+* `include/protocol.h`
+* `include/transport.h`
+* `include/yai_protocol_ids.h`
+* `include/errors.h`
+* `include/auth.h`
+* `include/roles.h`
+* `include/session.h`
+* `include/audit.h`
+
+Runtime-bound protocol artifact:
+
+* `runtime/include/rpc_runtime.h`
+
+## Normative role
+
+Artifacts in this directory are normative.
+
+The header files are canonical interface definitions for protocol-facing consumers.
+They must remain aligned with:
+
+* `foundation/` for normative primacy
+* `registry/` for canonical machine-readable references
+* `formal/` for traceability and formal alignment
+* `vectors/` for conformance validation
+
+If a downstream implementation diverges from these contracts, the implementation is non-conforming.
+
+## Versioning and compatibility rules
+
+* Protocol constants, identifiers, envelope rules, and required semantics are compatibility-critical
+* Breaking changes require compatibility review and an appropriate repository version change
+* New identifiers require coordinated updates to canonical registries, protocol headers, and `CHANGELOG.md`
+* Additive changes must preserve backward compatibility within the active compatibility line
 
 ## Consumers
 
-- `yai-core`
-- `yai-cli`
-- `yai-yx`
+Typical consumers include:
 
-## Change Procedure
+* `yai`
+* `yai-cli`
+* `yai-yx`
+* validation and qualification tooling that depends on canonical protocol surfaces
 
-- Update headers and ID registry.
-- Update `REGISTRY.md`, `SPEC_MAP.md`, and `CHANGELOG.md`.
-- Update vectors/tests if behavior changes.
+## Change discipline
+
+A protocol change must update, as applicable:
+
+* canonical headers in this directory
+* `REGISTRY.md`
+* `SPEC_MAP.md`
+* `CHANGELOG.md`
+* relevant registries and schemas
+* vectors and validation artifacts when behavior changes
+
+Silent protocol drift is non-compliant by definition.

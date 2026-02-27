@@ -1,28 +1,70 @@
 # CLI
 
-## What It Is
+`contracts/cli/` contains the canonical CLI-facing contract surface of `yai-law`.
 
-Normative command and schema contracts for the YAI CLI surface.
+These artifacts define how the YAI CLI surface is interpreted, documented, and attached to the canonical command model consumed by downstream runtimes and tools.
 
-## Normative Artifacts
+## Scope
 
-- `commands.v1.json`
-- `commands.schema.json`
+The CLI surface covers:
 
-## Versioning Rules
+* CLI-facing contract interpretation
+* command-surface notes and public interface guidance
+* binding of the CLI surface to the canonical command registry
 
-- File names encode the major version (`v1`).
-- Any breaking change requires a new major file and a repo `MAJOR` bump.
-- Additive changes require `MINOR` bump and `CHANGELOG.md` entry.
+## Normative artifacts
+
+Canonical machine-readable command artifacts are defined outside this directory:
+
+* `registry/commands.v1.json`
+* `registry/schema/commands.v1.schema.json`
+
+CLI-facing supporting artifacts in this directory include:
+
+* `BINDING.md`
+* `notes/CLI_PUBLIC_INTERFACE.md`
+* `notes/TUI_COCKPIT_V1.md`
+
+## Normative role
+
+`contracts/cli/` is normative where it defines binding expectations for the CLI surface, but the canonical machine-readable command model remains in the registry layer.
+
+The CLI surface must remain aligned with:
+
+* `registry/commands.v1.json`
+* `registry/schema/commands.v1.schema.json`
+* `registry/primitives.v1.json`
+* `registry/artifacts.v1.json`
+* `foundation/` for normative primacy
+* `formal/` where CLI-relevant behavior is traced
+
+If a CLI consumer diverges from the canonical command registry or from the attached CLI bindings, the consumer is non-conforming.
+
+## Versioning and compatibility rules
+
+* Breaking command-surface changes require compatibility review and an appropriate repository version change
+* Additive compatible command changes require repository version review and `CHANGELOG.md` coverage
+* CLI-facing notes must not redefine the canonical machine-readable command model
+* Changes that affect command interpretation, validation, or expected behavior must be treated as compatibility-sensitive
 
 ## Consumers
 
-- `yai-core`
-- `yai-cli`
-- `yai-yx`
+Typical consumers include:
 
-## Change Procedure
+* `yai`
+* `yai-cli`
+* `yai-yx`
+* tooling that consumes or validates canonical CLI command surfaces
 
-- Update the JSON contracts.
-- Update `REGISTRY.md`, `SPEC_MAP.md`, and `CHANGELOG.md`.
-- Update vectors/tests if behavior changes.
+## Change discipline
+
+A CLI-surface change must update, as applicable:
+
+* canonical command registry artifacts
+* CLI binding and note artifacts in this directory
+* `REGISTRY.md`
+* `SPEC_MAP.md`
+* `CHANGELOG.md`
+* relevant validation artifacts when behavior changes
+
+Silent drift between CLI behavior and the canonical command surface is non-compliant by definition.

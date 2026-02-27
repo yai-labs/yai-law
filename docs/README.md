@@ -1,22 +1,52 @@
-# YAI Specs Documentation
+# YAI Law Documentation
 
-This directory contains informative documentation that explains how to
-navigate and consume the normative contracts in this repository.
+`docs/` contains informative documentation for `yai-law`.
 
-Canonical indexes:
-- `../SPEC_MAP.md`
-- `../REGISTRY.md`
-- `../VERSIONING.md`
-- `../COMPATIBILITY.md`
+This directory helps readers navigate, interpret, and consume the canonical law surfaces defined elsewhere in the repository. It does not redefine normative contracts.
 
-Primary docs in this folder:
-- `C_MAINPAGE.md` (Doxygen entry page)
-- `spec_map.pointer.md` (pointer to canonical map)
-- `policy/README.md` (documentation policy for this repository)
+## Purpose
+
+Artifacts under `docs/` are documentation-first and informative.
+
+They exist to:
+
+* explain repository structure
+* support generated documentation flows
+* point readers to canonical indexes and policy documents
+* improve navigation across the law surface
+
+If documentation conflicts with a canonical artifact elsewhere in the repository, the canonical artifact prevails.
+
+## Canonical indexes
+
+Primary repository indexes live at the root:
+
+* `../SPEC_MAP.md`
+* `../REGISTRY.md`
+* `../VERSIONING.md`
+* `../COMPATIBILITY.md`
+
+## Primary documents in this directory
+
+* `C_MAINPAGE.md` — Doxygen entry page
+* `pointers/SPEC_MAP.pointer.md` — pointer to the canonical map
+* `policy/README.md` — documentation policy for this repository
+
+## Normative source domains
 
 Normative source domains live outside `docs/`:
-- `../foundation/`
-- `../contracts/`
-- `../formal/`
-- `../compliance/`
-- `../vectors/`
+
+* `../authority/`
+* `../foundation/`
+* `../runtime/`
+* `../contracts/`
+* `../registry/`
+* `../schema/`
+* `../formal/`
+* `../packs/`
+* `../vectors/`
+
+## Interpretation rule
+
+`docs/` supports law consumption.
+It is not the origin of repository authority.

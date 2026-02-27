@@ -1,36 +1,56 @@
 # Versioning
 
-This repository follows Semantic Versioning for repository releases.
-Version changes apply to repository tags and to explicitly versioned normative artifacts.
+`yai-law` follows Semantic Versioning for repository releases.
+
+Version changes apply to repository tags and to explicitly versioned canonical artifacts where applicable.
 
 Public release baseline: `v0.1.0` (2026-02-17).
 
-## Version Scheme (Repository Tags)
+## Repository version scheme
 
-- `MAJOR`: incompatible normative contract change
-- `MINOR`: backward-compatible additive normative change
-- `PATCH`: documentation, clarifications, compatible corrections
+- `MAJOR` — incompatible normative or contract change
+- `MINOR` — backward-compatible additive normative change
+- `PATCH` — compatible corrections, clarifications, documentation updates, or non-breaking metadata changes
 
-## Compatibility Identifier
+## Compatibility line
 
-`SPECS_API_VERSION` is the protocol/contract compatibility line.
-Current value: `v1`.
+The repository also maintains an explicit law compatibility line.
+
+Current compatibility line: `v1`.
 
 Important:
-- Repository release version (`v0.1.0`, `v0.1.1`, ...) and `SPECS_API_VERSION` are related but not identical.
-- The repo can be `0.x` while the active contract compatibility line is `v1`.
 
-## What Is Breaking
+- Repository release versions (`v0.1.0`, `v0.1.1`, ...) and the compatibility line (`v1`) are related but not identical
+- The repository may remain in `0.x` release development while exposing a stable compatibility line for public law consumption
+- A repository version bump does not automatically imply a compatibility-line change
 
-A change is breaking when a compliant consumer can no longer interoperate without code changes.
-Examples:
-- removing required fields or commands
-- changing required types or semantics
-- altering ABI/protocol constants or envelope rules
-- reusing IDs or changing ID meaning
+## What is breaking
 
-## Pinning and Releases
+A change is breaking when a conforming consumer can no longer interoperate or validate successfully without code, contract, or enforcement changes.
 
-- Consumers MUST pin a specific repo revision or release tag.
-- Pin updates MUST reference `CHANGELOG.md` and `COMPATIBILITY.md`.
-- Tags SHOULD follow `vMAJOR.MINOR.PATCH`.
+Examples include:
+
+- removing required fields, commands, or artifact roles
+- changing required types, semantics, or validation behavior
+- altering ABI or protocol constants
+- changing wire-envelope rules
+- reusing identifiers or changing identifier meaning
+- changing registry or schema behavior in a way that invalidates previously conforming consumers
+
+## What is non-breaking
+
+Examples of non-breaking changes include:
+
+- additive fields or commands introduced under backward-compatible rules
+- new optional schemas or artifact roles
+- clarifications that do not alter contract meaning
+- documentation improvements
+- additional validation vectors that do not redefine normative behavior
+
+## Pinning and releases
+
+- Consumers MUST pin a specific repository revision or release tag
+- Pin updates MUST be reviewed against `CHANGELOG.md`, `COMPATIBILITY.md`, and the canonical indexes
+- Tags SHOULD follow `vMAJOR.MINOR.PATCH`
+- Breaking changes MUST be reflected both in release versioning and in compatibility evaluation
+- Releases that affect public law surfaces SHOULD include explicit migration or review notes when relevant

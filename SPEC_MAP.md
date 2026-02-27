@@ -1,72 +1,123 @@
 # SPEC_MAP
 
-Canonical index of all normative artifacts in `yai-specs`.
-This file is the single source of truth for navigation.
+Canonical map of the normative artifacts in `yai-law`.
 
-## Compliance
+This file is the authoritative navigation index for the public law surface of YAI. It groups the canonical artifacts by authority area so that consumers can identify the correct source for contracts, schemas, registries, runtime-layer constraints, compliance overlays, and conformance vectors.
 
-Policy specs:
-- `compliance/compliance.context.v1.json`
-- `compliance/retention.policy.v1.json`
+## 1) Foundation
 
-Policy packs:
-- `packs/compliance/gdpr-eu/2026Q1/pack.meta.json`
-- `packs/compliance/gdpr-eu/2026Q1/retention.defaults.json`
-- `packs/compliance/gdpr-eu/2026Q1/taxonomy.data_classes.json`
-- `packs/compliance/gdpr-eu/2026Q1/taxonomy.legal_basis.json`
-- `packs/compliance/gdpr-eu/2026Q1/taxonomy.purposes.json`
+Foundational law artifacts:
 
-## Contracts (Normative Law)
+* `foundation/axioms/`
+* `foundation/invariants/`
+* `foundation/boundaries/`
+* `foundation/terminology/`
+* `foundation/extensions/`
+* `foundation/extensions/compliance/`
 
-- `foundation/axioms/`
-- `foundation/invariants/`
-- `foundation/boundaries/`
-- `foundation/terminology/`
-- `foundation/extensions/`
-- `foundation/extensions/compliance/`
-- `formal/`
+## 2) Runtime layers
 
-## Protocol
+Canonical runtime-layer surfaces:
 
-- `contracts/protocol/include/protocol.h`
-- `contracts/protocol/include/transport.h`
-- `contracts/protocol/include/yai_protocol_ids.h`
-- `contracts/protocol/include/errors.h`
-- `contracts/protocol/include/auth.h`
-- `contracts/protocol/include/roles.h`
-- `contracts/protocol/include/session.h`
-- `contracts/protocol/include/audit.h`
-- `contracts/protocol/runtime/include/rpc_runtime.h`
+* `runtime/boot/`
+* `runtime/root/`
+* `runtime/kernel/`
+* `runtime/engine/`
+* `runtime/mind/`
 
-## Control
+Layer-specific canonical schemas:
 
-- `contracts/control/schema/control_plane.v1.json`
-- `contracts/control/schema/authority.json`
+* `runtime/engine/schema/engine_cortex.v1.json`
+* `runtime/mind/graph/schema/graph.v1.json`
 
-## CLI
+## 3) Protocol
 
-- `registry/commands.v1.json`
-- `registry/schema/commands.v1.schema.json`
+Normative protocol and transport surfaces:
 
-## Vault
+* `contracts/protocol/include/protocol.h`
+* `contracts/protocol/include/transport.h`
+* `contracts/protocol/include/yai_protocol_ids.h`
+* `contracts/protocol/include/errors.h`
+* `contracts/protocol/include/auth.h`
+* `contracts/protocol/include/roles.h`
+* `contracts/protocol/include/session.h`
+* `contracts/protocol/include/audit.h`
+* `contracts/protocol/runtime/include/rpc_runtime.h`
 
-- `contracts/vault/schema/vault_abi.json`
-- `contracts/vault/include/yai_vault_abi.h`
+## 4) Control
 
-## Graph
+Canonical control-plane schemas:
 
-- `runtime/mind/graph/schema/graph.v1.json`
+* `contracts/control/schema/control_plane.v1.json`
+* `contracts/control/schema/authority.json`
 
-## Providers
+## 5) Vault
 
-- `contracts/providers/schema/providers.v1.json`
+Canonical vault surfaces:
 
-## Engine
+* `contracts/vault/schema/vault_abi.json`
+* `contracts/vault/include/yai_vault_abi.h`
 
-- `runtime/engine/schema/engine_cortex.v1.json`
+## 6) Providers
 
-## Vectors (Conformance)
+Canonical provider-facing schema surfaces:
 
-- `vectors/transport_vectors.json`
-- `vectors/auth_vectors.json`
-- `vectors/audit_vectors.json`
+* `contracts/providers/schema/providers.v1.json`
+
+## 7) CLI and registries
+
+Canonical machine-readable registries:
+
+* `registry/primitives.v1.json`
+* `registry/commands.v1.json`
+* `registry/artifacts.v1.json`
+
+Associated registry schemas:
+
+* `registry/schema/primitives.v1.schema.json`
+* `registry/schema/commands.v1.schema.json`
+* `registry/schema/artifacts.v1.schema.json`
+
+## 8) Transversal schemas
+
+Canonical transversal artifact and policy schemas:
+
+* `schema/bundle_manifest.v1.schema.json`
+* `schema/containment_metrics.v1.schema.json`
+* `schema/decision_record.v1.schema.json`
+* `schema/evidence_index.v1.schema.json`
+* `schema/policy.v1.schema.json`
+* `schema/verification_report.v1.schema.json`
+* `schema/compliance.context.v1.json`
+* `schema/retention.policy.v1.json`
+
+## 9) Compliance packs
+
+Published compliance overlays:
+
+* `packs/compliance/gdpr-eu/2026Q1/pack.meta.json`
+* `packs/compliance/gdpr-eu/2026Q1/retention.defaults.json`
+* `packs/compliance/gdpr-eu/2026Q1/taxonomy.data_classes.json`
+* `packs/compliance/gdpr-eu/2026Q1/taxonomy.legal_basis.json`
+* `packs/compliance/gdpr-eu/2026Q1/taxonomy.purposes.json`
+
+## 10) Formal artifacts
+
+Formal traceability and model artifacts:
+
+* `formal/traceability.v1.json`
+* `formal/schema/traceability.v1.schema.json`
+* `formal/spec_map.md`
+* `formal/tla/LAW_IDS.tla`
+* `formal/tla/YAI_KERNEL.tla`
+* `formal/configs/YAI_KERNEL.cfg`
+* `formal/configs/YAI_KERNEL.quick.cfg`
+* `formal/configs/YAI_KERNEL.deep.cfg`
+
+## 11) Conformance vectors
+
+Validation vectors are informative, but they are part of the conformance discipline and should be updated whenever normative behavior changes.
+
+* `vectors/transport_vectors.json`
+* `vectors/auth_vectors.json`
+* `vectors/audit_vectors.json`
