@@ -49,6 +49,7 @@ Normative protocol and transport surfaces:
 Canonical control-plane schemas:
 
 * `contracts/control/schema/control_plane.v1.json`
+* `contracts/control/schema/control_call.v1.json`
 * `contracts/control/schema/authority.json`
 
 ## 5) Vault

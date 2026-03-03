@@ -58,6 +58,29 @@
     },
 
     {
+      "id": "yai.control.call",
+      "name": "call",
+      "group": "control",
+      "summary": "Generic deterministic control-call dispatcher over RPC",
+      "args": [
+        { "name": "target_plane", "pos": 1, "type": "enum", "values": ["kernel", "engine", "root"], "required": true },
+        { "name": "command_id", "pos": 2, "type": "string", "required": true },
+        { "name": "argv", "flag": "--arg", "type": "string[]", "required": false },
+        { "name": "ws", "flag": "--ws", "type": "string", "required": false },
+        { "name": "arming", "flag": "--arming", "type": "bool", "required": false, "default": false },
+        { "name": "role", "flag": "--role", "type": "enum", "values": ["operator", "system"], "required": false }
+      ],
+      "outputs": ["json"],
+      "side_effects": ["rpc_call"],
+      "law_hooks": ["I-001", "I-002", "I-003", "L1", "L2"],
+      "law_invariants": ["I-001-traceability", "I-002-determinism", "I-003-governance"],
+      "law_boundaries": ["L1-kernel", "L2-engine"],
+      "uses_primitives": ["T-003", "T-007", "S-016", "S-002"],
+      "emits_artifacts": [],
+      "consumes_artifacts": []
+    },
+
+    {
       "id": "yai.kernel.ws",
       "name": "ws",
       "group": "kernel",
