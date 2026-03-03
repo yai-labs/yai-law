@@ -122,3 +122,8 @@ Validation vectors are informative, but they are part of the conformance discipl
 * `vectors/transport_vectors.json`
 * `vectors/auth_vectors.json`
 * `vectors/audit_vectors.json`
+
+## 12) Registry scale target
+
+Command registry is maintained at 14 groups x 200 command_id (2800 total) through generator-driven expansion (`tools/gen/commands_expand_v1.py`).
+
