@@ -88,9 +88,8 @@ Vectors are informative validation artifacts. They do not override normative con
 - `vectors/transport_vectors.json`
 - `vectors/auth_vectors.json`
 - `vectors/audit_vectors.json`
-
 ## Registry scale
 
 Current command registry target is **200 command_id per group** across 14 groups (total 2800 IDs).
+This profile is a **registry-scale stress and coverage surface**, not a final product taxonomy.
 Expansion is generated via `tools/gen/commands_expand_v1.py` and validated via `make validate-law-registry`.
-
