@@ -76,3 +76,11 @@ Removal happens in later versions only after explicit compatibility notice.
 - `yai-sdk` must ingest all architecture fields and expose them in catalog/help query surfaces.
 - `yai-cli` must apply architecture fields for default help filtering, `--all`, and plumbing exposure.
 - No consumer may infer architecture class from local heuristics when the field is present in law.
+
+## 8. Workspace Model linkage
+
+Workspace-scoped command semantics are governed by `WORKSPACE_MODEL.pointer.md`.
+
+- runtime workspace state is kernel-owned
+- CLI current workspace is a user/session binding layer
+- precedence: explicit `--ws-id` > current binding > unresolved context error
