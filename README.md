@@ -18,7 +18,7 @@ Downstream repositories consume it as a pinned dependency and must prove conform
 
 - `yai-law`: canonical normative source of truth
 - `yai-sdk`: law-constrained client abstraction
-- `yai-cli`: governed operator surface over SDK + law
+- `yai-cli`: canonical command surface over SDK + law
 - `yai`: runtime and program implementation constrained by law
 - `yai-ops`: operational evidence and validation against law-defined expectations
 
