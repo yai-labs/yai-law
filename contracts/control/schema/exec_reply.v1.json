@@ -4,18 +4,37 @@
   "title": "YAI Exec Reply v1",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "type",
-    "status",
-    "code",
-    "reason",
-    "command_id",
-    "target_plane",
-    "trace_id"
+  "required": ["type"],
+  "oneOf": [
+    {
+      "required": [
+        "status",
+        "code",
+        "reason",
+        "command_id",
+        "target_plane",
+        "trace_id"
+      ]
+    },
+    {
+      "required": [
+        "outcome",
+        "code",
+        "summary",
+        "hint",
+        "data",
+        "trace",
+        "meta"
+      ]
+    }
   ],
   "properties": {
     "type": {
       "const": "yai.exec.reply.v1"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["ok", "warn", "deny", "fail"]
     },
     "status": {
       "type": "string",
@@ -38,6 +57,19 @@
         "PROTOCOL_ERROR",
         "INTERNAL_ERROR"
       ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "hint": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
     },
     "reason": {
       "type": "string",
@@ -63,6 +95,67 @@
     "data": {
       "type": "object",
       "additionalProperties": true
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trace_id": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "claim_id": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "workspace_id": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "law_ref": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "evidence_ref": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "ts",
+        "duration_ms",
+        "target_plane",
+        "command_id"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "ts": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "target_plane": {
+          "type": "string",
+          "enum": ["root", "kernel", "engine"]
+        },
+        "command_id": {
+          "type": "string",
+          "pattern": "^yai\\.[a-z0-9_\\-]+\\.[a-z0-9_\\-]+$"
+        }
+      }
     },
     "evidence": {
       "type": "object",
