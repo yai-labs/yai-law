@@ -33,6 +33,28 @@ It is normative. Implementations must conform.
 - `3` dependency missing
 - `4` runtime not ready
 
+### Canonical execution line
+- Execution output is text-only and canonicalized as:
+  - default: `yai: <status>: <code>: <reason>`
+  - verbose (`--verbose-contract`): `yai: <status>: <code>: <reason> (command_id=<id>, trace_id=<tid>, target_plane=<plane>)`
+- The line is printed for `ok`, `nyi`, and `error` outcomes.
+- `<status>/<code>/<reason>` and verbose metadata are derived from `contracts/control/schema/exec_reply.v1.json`.
+
+### Status/code to CLI rc mapping
+- `ok/OK -> 0`
+- `nyi/NOT_IMPLEMENTED -> 6`
+- `error/BAD_ARGS -> 2`
+- `error/UNAUTHORIZED -> 5`
+- `error/RUNTIME_NOT_READY -> 4`
+- `error/SERVER_UNAVAILABLE -> 107`
+- `error/PROTOCOL_ERROR -> 1`
+- `error/INTERNAL_ERROR -> 1`
+- `error/INVALID_TARGET -> 1`
+
+### Rendering policy
+- No silent success: `rc=0` still emits a canonical execution line.
+- `command_id` remains mandatory in the machine contract, optional in default human line, and mandatory in verbose contract line.
+
 ### Default Workspace
 - A workspace id (`--ws`) identifies a runtime instance.
 - If omitted, `ws_default` is loaded from config.
