@@ -47,3 +47,13 @@ If a document in `docs/` conflicts with canonical artifacts outside `docs/`, can
 
 Consumers in `yai-sdk`, `yai-cli`, `yai`, and `yai-ops` should reference this directory as informative support only.
 Normative references must always target canonical law domains.
+
+## Command surface taxonomy note
+
+Command navigation semantics are normative in the registry taxonomy:
+- `entrypoint`
+- `topic`
+- `op`
+- `canonical_path`
+
+Consumers should derive help/navigation behavior from those law fields instead of inventing local command grouping rules.
