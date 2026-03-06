@@ -29,8 +29,11 @@ If a document in `docs/` conflicts with canonical artifacts outside `docs/`, can
 
 - `C_MAINPAGE.md` - doxygen/documentation entry page
 - `pointers/SPEC_MAP.pointer.md` - pointer to canonical structure map
+- `pointers/DOCS_ARCHITECTURE.pointer.md` - cross-repo docs architecture and truth boundaries
+- `pointers/SURFACE_POLICY.pointer.md` - command surface exposure/promotion policy pointer
 - `pointers/WORKSPACE_MODEL.pointer.md` - workspace model v2 pointer (identity, lifecycle, root, binding)
 - `policy/README.md` - documentation policy and governance rules
+- `reports/docs_surface_architecture_report_v1.md` - cross-repo docs/surface architecture classification report
 
 ## Normative source domains (outside `docs/`)
 

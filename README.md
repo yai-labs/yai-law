@@ -109,6 +109,10 @@ They pin, integrate, validate, and promote only with evidence.
 - `CHANGELOG.md` - contract/surface evolution log
 - `SECURITY.md` - disclosure and security policy
 
+Cross-repo docs/surface governance pointers:
+- `docs/pointers/DOCS_ARCHITECTURE.pointer.md`
+- `docs/pointers/SURFACE_POLICY.pointer.md`
+
 ---
 
 ## 7) Formal and compliance linkage
