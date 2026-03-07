@@ -61,3 +61,18 @@ A command may be moved out of default surface when:
 - visibility downgraded from `public` to `advanced/internal`
 
 Legacy aliases may remain for compatibility windows but must not dominate default help.
+
+## Operator Capability Split (v1)
+
+Operational capability families are intentionally separated:
+
+- `doctor`: readiness and diagnostics checks
+- `inspect`: read-only state inspection
+- `verify`: normative/alignment validation
+
+Policy constraints:
+
+- `doctor` MUST NOT mutate runtime/workspace state.
+- `inspect` MUST remain read-only and non-judgmental.
+- `verify` MUST provide explicit validation outcome and hints.
+- default surface SHOULD expose these three families as first-class operator entrypoints.
